@@ -15,7 +15,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
         private TaskCompletionSource<bool> currentTask;
         private TaskCompletionSource<bool> initTask;
 
-        public TronCliClient()
+        public TronCliClient(string walletJarPath)
         {
             callbacks = new Dictionary<string, Func<string, bool?>>();
             process = new Process();
@@ -23,8 +23,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
 
             ProcessStartInfo pi = new ProcessStartInfo();
             pi.FileName = @"java";
-            pi.Arguments = @" -jar build\libs\wallet-cli.jar";
-            pi.WorkingDirectory = @"C:\wallet-cli\";
+            pi.Arguments = $@" -jar {walletJarPath}";
             pi.RedirectStandardInput = true;
             pi.RedirectStandardOutput = true;
             pi.CreateNoWindow = true;

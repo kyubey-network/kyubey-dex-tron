@@ -38,19 +38,17 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
 
         private void OnOutputDataReceived(object sender, DataReceivedEventArgs e)
         {
+            Console.WriteLine(e.Data);
             if (e.Data.Contains("Please type one of the following commands to proceed."))
             {
                 initTask.SetResult(true);
             }
-            else if (current != null)
+            else if (current != null && callbacks.ContainsKey(current))
             {
-                if (callbacks.ContainsKey(current))
+                var result = callbacks[current](e.Data);
+                if (result.HasValue)
                 {
-                    var result = callbacks[current](e.Data);
-                    if (result.HasValue)
-                    {
-                        currentTask?.SetResult(result.Value);
-                    }
+                    currentTask?.SetResult(result.Value);
                 }
             }
         }
@@ -62,6 +60,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                 callbacks.Add(alias, callback);
             }
             process.StandardInput.WriteLine(command);
+            Console.WriteLine(command);
             currentTask = new TaskCompletionSource<bool>();
             return currentTask.Task;
         }

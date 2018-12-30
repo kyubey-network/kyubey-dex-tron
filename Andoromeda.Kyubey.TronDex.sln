@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28407.52
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Andoromeda.Kyubey.TronDex.CliNet", "Andoromeda.Kyubey.TronDex.CliNet\Andoromeda.Kyubey.TronDex.CliNet.csproj", "{B386E861-6EAF-4D3E-8DA8-28628FC20B4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andoromeda.Kyubey.TronDex.CliNet", "Andoromeda.Kyubey.TronDex.CliNet\Andoromeda.Kyubey.TronDex.CliNet.csproj", "{B386E861-6EAF-4D3E-8DA8-28628FC20B4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Andoromeda.Kyubey.TronDex.MatchBot", "Andoromeda.Kyubey.TronDex.MatchBot\Andoromeda.Kyubey.TronDex.MatchBot.csproj", "{8827F4F3-5C01-4937-B069-316D1B10400E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andoromeda.Kyubey.TronDex.MatchBot", "Andoromeda.Kyubey.TronDex.MatchBot\Andoromeda.Kyubey.TronDex.MatchBot.csproj", "{8827F4F3-5C01-4937-B069-316D1B10400E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Andoromeda.Kyubey.TronDex.FarmingBot", "Andoromeda.Kyubey.TronDex.FarmingBot\Andoromeda.Kyubey.TronDex.FarmingBot.csproj", "{659BE9D3-FA71-4C1E-A370-E6395243FFFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andoromeda.Kyubey.TronDex.FarmingBot", "Andoromeda.Kyubey.TronDex.FarmingBot\Andoromeda.Kyubey.TronDex.FarmingBot.csproj", "{659BE9D3-FA71-4C1E-A370-E6395243FFFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Andoromeda.Kyubey.TronDex.Demo", "Andoromeda.Kyubey.TronDex.Demo\Andoromeda.Kyubey.TronDex.Demo\Andoromeda.Kyubey.TronDex.Demo.csproj", "{E2CD1909-79B4-45C4-82AA-E0F404D202BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{659BE9D3-FA71-4C1E-A370-E6395243FFFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{659BE9D3-FA71-4C1E-A370-E6395243FFFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{659BE9D3-FA71-4C1E-A370-E6395243FFFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2CD1909-79B4-45C4-82AA-E0F404D202BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2CD1909-79B4-45C4-82AA-E0F404D202BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2CD1909-79B4-45C4-82AA-E0F404D202BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2CD1909-79B4-45C4-82AA-E0F404D202BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

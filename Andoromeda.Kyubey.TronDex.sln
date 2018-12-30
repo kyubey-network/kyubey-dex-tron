@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andoromeda.Kyubey.TronDex.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andoromeda.Kyubey.TronDex.FarmingBot", "Andoromeda.Kyubey.TronDex.FarmingBot\Andoromeda.Kyubey.TronDex.FarmingBot.csproj", "{659BE9D3-FA71-4C1E-A370-E6395243FFFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Andoromeda.Kyubey.TronDex.Demo", "Andoromeda.Kyubey.TronDex.Demo\Andoromeda.Kyubey.TronDex.Demo\Andoromeda.Kyubey.TronDex.Demo.csproj", "{E2CD1909-79B4-45C4-82AA-E0F404D202BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Andoromeda.Kyubey.TronDex.Demo", "Andoromeda.Kyubey.TronDex.Demo\Andoromeda.Kyubey.TronDex.Demo.csproj", "{1902A8EA-8CD0-43B7-A9AA-54777D621A0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{659BE9D3-FA71-4C1E-A370-E6395243FFFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{659BE9D3-FA71-4C1E-A370-E6395243FFFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{659BE9D3-FA71-4C1E-A370-E6395243FFFD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2CD1909-79B4-45C4-82AA-E0F404D202BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2CD1909-79B4-45C4-82AA-E0F404D202BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2CD1909-79B4-45C4-82AA-E0F404D202BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2CD1909-79B4-45C4-82AA-E0F404D202BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1902A8EA-8CD0-43B7-A9AA-54777D621A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1902A8EA-8CD0-43B7-A9AA-54777D621A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1902A8EA-8CD0-43B7-A9AA-54777D621A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1902A8EA-8CD0-43B7-A9AA-54777D621A0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -48,6 +48,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                 if (result.HasValue)
                 {
                     currentTask?.SetResult(result.Value);
+                    current = null;
                 }
             }
         }
@@ -58,6 +59,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             {
                 callbacks.Add(alias, callback);
             }
+            current = alias;
             process.StandardInput.WriteLine(command);
             Console.WriteLine(command);
             currentTask = new TaskCompletionSource<bool>();
@@ -77,7 +79,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                 {
                     return true;
                 }
-                else if (str.Contains("No keystore file found, please use registerwallet or importwallet first!") || str.Contains("Login failed!"))
+                else if (str.Contains("Login failed!"))
                 {
                     return false;
                 }

@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Andoromeda.Kyubey.TronDex.CliNet\Andoromeda.Kyubey.TronDex.CliNet.csproj" />
+  </ItemGroup>
+
 </Project>

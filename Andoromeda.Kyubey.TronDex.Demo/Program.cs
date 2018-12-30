@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Andoromeda.Kyubey.TronDex.CliNet;
+using System;
 using System.Diagnostics;
 
 namespace Andoromeda.Kyubey.TronDex.Demo
@@ -7,6 +8,11 @@ namespace Andoromeda.Kyubey.TronDex.Demo
     {
         static void Main(string[] args)
         {
+            var client = new TronCliClient(@"C:\wallet-cli\build\libs\wallet-cli.jar");
+            client.LoginAsync("Passw0rd").Wait();
+
+
+            Console.ReadKey();
             var privateKey = "7b81cd82b28dbf9a6efb21de40fb263d83e286644ca04f910f486cb90a7a8357";
             var pwd = "Passw0rd";
 

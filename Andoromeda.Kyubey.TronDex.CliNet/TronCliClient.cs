@@ -15,7 +15,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
         private TaskCompletionSource<bool> currentTask;
         private TaskCompletionSource<bool> initTask;
 
-        public TronCliClient(string walletJarPath)
+        public TronCliClient(string workingDirectory, string walletJarPath)
         {
             callbacks = new Dictionary<string, Func<string, bool?>>();
             process = new Process();
@@ -28,6 +28,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             pi.RedirectStandardOutput = true;
             pi.CreateNoWindow = true;
             pi.UseShellExecute = false;
+            pi.WorkingDirectory = workingDirectory;
             process.StartInfo = pi;
             process.OutputDataReceived += OnOutputDataReceived;
             process.Start();
@@ -66,13 +67,29 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             return currentTask.Task;
         }
 
-        public Task<bool> LoginAsync(string password)
+        public Task<bool> LoginAsync(string password, int? keyNo = null)
         {
             this.password = password;
-            return InvokeAsync("Login", "Login", (str) => {
+            return InvokeAsync("Login", "Login", (str) =>
+            {
                 if (str.Contains("Please input your password."))
                 {
                     process.StandardInput.WriteLine(this.password);
+                    return null;
+                }
+                else if (str.Contains("Please choose between"))
+                {
+                    var findStr = "1 and";
+                    var index = str.IndexOf(findStr);
+                    var maxNo = Convert.ToInt32(str.Substring(index + findStr.Length, str.Length - index - findStr.Length));
+
+                    if (keyNo >= maxNo || keyNo == null)
+                    {
+                        process.StandardInput.WriteLine(maxNo);
+                    }
+                    else {
+                        process.StandardInput.WriteLine(keyNo);
+                    }
                     return null;
                 }
                 else if (str.Contains("Login successful !!!"))
@@ -90,9 +107,38 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             });
         }
 
+        public Task<bool> SendCoinAsync(string address, int amount)
+        {
+            return InvokeAsync($"SendCoin {address} {amount}", "SendCoin", (str) =>
+            {
+                if (str.Contains("failed !!"))
+                {
+                    return false;
+                }
+                else if (str.Contains("Please confirm that you want to continue enter y or Y, else any other."))
+                {
+                    process.StandardInput.WriteLine("y");
+                    return null;
+                }
+                else if (str.Contains("Please input your password."))
+                {
+                    process.StandardInput.WriteLine(this.password);
+                    return null;
+                }
+                else if (str.Contains("successful !!"))
+                {
+                    return true;
+                }
+                else
+                {
+                    return null;
+                }
+            });
+        }
+
         public Task<bool> TransferAssetAsync(string address, string symbol, int amount)
         {
-            return InvokeAsync($"TransferAsset {address} {symbol} {amount}", "TransferAsset", (str) => 
+            return InvokeAsync($"TransferAsset {address} {symbol} {amount}", "TransferAsset", (str) =>
             {
                 if (str.Contains("TransferAsset failed!"))
                 {
@@ -103,7 +149,41 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                     process.StandardInput.WriteLine("y");
                     return null;
                 }
+                else if (str.Contains("Please input your password."))
+                {
+                    process.StandardInput.WriteLine(this.password);
+                    return null;
+                }
                 else if (str.Contains("successful !!"))
+                {
+                    return true;
+                }
+                else
+                {
+                    return null;
+                }
+            });
+        }
+
+        public Task<bool> ImportWalletAsync(string pwd, string privateKey)
+        {
+            return InvokeAsync($"ImportWallet", "ImportWallet", (str) =>
+            {
+                if (str.Contains("failed"))
+                {
+                    return false;
+                }
+                else if (str.Contains("Please input password"))
+                {
+                    process.StandardInput.WriteLine(pwd);
+                    return null;
+                }
+                else if (str.Contains("Please input private key."))
+                {
+                    process.StandardInput.WriteLine(privateKey);
+                    return null;
+                }
+                else if (str.Contains("Import a wallet successful"))
                 {
                     return true;
                 }

@@ -140,7 +140,7 @@ const zh_tw = {
     tip_fav_succeed: '收藏成功',
     tip_exchange_adjuct_zero: '為了保證您的交易不受損失,當前價格({price})的最小買入量是{min_count},請調整您的價格或者加大買入量,謝謝。',
     tip_exchange_adjuct_zero2: '為了保證您的交易不受損失,當前價格({price})的最小賣出量是{min_count},請調整您的價格或者加大賣出量,謝謝。',
-    scatter_sign_in: 'Scatter登錄',
+    scatter_sign_in: 'TronLink登錄',
     turnover_24H: '24H成交額：',
     order_detail: '訂單詳情',
     please_input_name: '請輸入名稱',

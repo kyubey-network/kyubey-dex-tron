@@ -1,0 +1,49 @@
+﻿<div v-on:scroll.passive="onScroll">
+    <div class="header" v-bind:class="{ 'shadow': onScroll !== false }">
+        <div class="home-banner">
+            <div class="home-banner-text-outer">
+                <div class="home-banner-title">Kyubey DEX</div>
+                <div class="home-banner-subtitle">{{$t('home_banner_tip1')}}</div>
+                <img src="/img/mobile.png" class="home-banner-picture" />
+            </div>
+        </div>
+
+        <div class="home-announcement-outer">
+            <img src="/img/announce.svg" />
+            <span v-on:click="$root.redirect('/home/news')">{{news[0].title}} {{formatTime(news[0].time)}}</span>
+        </div>
+
+        <div class="home-token-list">
+            <table class="home-token-filter">
+                <tr>
+                    <td :class="[sortControl.row === 'change_recent_day' ? 'active' : '']" @click="sortTokenOnClick('change_recent_day');backTop()">{{$t('ups_downs_24H')}}</td>
+                    <td :class="[sortControl.row === 'volume_recent_day' ? 'active' : '']" @click="sortTokenOnClick('volume_recent_day');backTop()">{{$t('volume_24H')}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="home-token-list result-list">
+        <table class="home-token-table">
+            <tr v-for="(item, index) in tokenTable" :key="index"
+                @click="$root.redirect('/exchange/:id', '/exchange/' + item.symbol, { id: item.symbol }, {})">
+                <td class="token-pair-cell">
+                    <div class="token-pair">   
+                        <i class="my-star" :class="{'my-star-active': favoriteObj[item.symbol]}" @click.stop="toggleFav(item.symbol)" v-if="isSignedIn"></i>
+                        {{item.symbol}}/EOS
+                    </div>
+                    <div class="token-volume">{{$t('volume_24H') +': '+item.volume_recent_day.toFixed(4)}} {{item.symbol}}</div>
+                </td>
+                <td class="token-price-cell">{{item.current_price}} {{item.symbol}}</td>
+                <td class="token-change-cell">
+                    <div v-bind:class="{ 'token-change green': item.up , 'token-change red': item.down , 'token-change gray':!item.down&!item.up }">{{item.change_recent_day}}</div>
+                </td>
+            </tr>
+            <tr v-if="tokenTable.length === 0">
+                <td style="text-align:center">
+                    {{$t('no_result')}}
+                </td>
+            </tr>
+        </table>
+        <div class="home-more-tokens" v-on:click="$root.redirect('/market')">{{$t('more')}} &gt;</div>
+    </div>
+</div>

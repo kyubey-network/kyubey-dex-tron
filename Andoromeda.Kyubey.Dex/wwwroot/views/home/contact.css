@@ -1,0 +1,47 @@
+.bottoming {
+    background-color: #F2F2F2;
+    padding: 118px 0px 67px 0px;
+    text-align: center;
+}
+.paper {
+    margin: 5px auto;
+    text-align: left;
+    font-family: 'FontAwesome';
+    background-color: #FFFFFF;
+    padding: 42px 64px 42px 64px;
+    box-shadow: 3px 3px 11px 5px rgba(218,216,216,0.5);
+    max-width: 758px;
+    min-height: 638px;
+}
+
+.signature {
+    text-align: right;
+    margin-top: 230px;
+}
+
+    .signature img {
+        width: 84px;
+    }
+
+.paper h1 {
+    margin-bottom: 54px;
+    font-size: 28px;
+    font-family: 'FontAwesome';
+    color: #000000;
+}
+
+.paper h2 {
+    font-weight: normal;
+    font-size: 16px;
+    margin-bottom: 20px;
+    font-family: 'FontAwesome';
+}
+
+.paper p {
+    font-size: 12px;
+}
+
+.paper a:hover {
+    color: #0059B9;
+    text-decoration: underline;
+} 

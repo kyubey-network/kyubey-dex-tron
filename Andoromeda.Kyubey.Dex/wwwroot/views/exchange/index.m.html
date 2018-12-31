@@ -1,0 +1,315 @@
+﻿<div class="symbol-container">
+    <div class="header">
+        <div class="exchange-header">
+            <img class="exchange-header-icon" :src="baseInfo.iconSrc" />
+            <div class="exchange-header-text-outer">
+                <div class="exchange-header-token">{{tokenId}}/EOS</div>
+                <div class="exchange-header-publisher">{{baseInfo.contract.transfer}}</div>
+            </div>
+            <div class="exchange-header-star"><i class="my-star" :class="{'my-star-active': favoriteObj[tokenId]}" @click.stop="toggleFav(tokenId)" v-if="isSignedIn"></i></div>
+            <div class="exchange-header-back" v-if="mobile.nav !== 'summary'" @click="mobile.nav = 'summary'"><i class="fa fa-line-chart"></i></div>
+        </div>
+        <div v-if="mobile.nav === 'summary'">
+            <div class="exchange-summary">
+                <div class="exchange-summary-left">
+                    <div class="exchange-summary-price green">
+                        <span class="text-success" v-if="latestTransactions[0]?latestTransactions[0].growing:true">{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed(8)}} ↑</span>
+                        <span class="text-danger" v-else>{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed(8)}} ↓</span>
+                    </div>
+                    <div class="exchange-summary-rate" v-bind:class="{ 'text-success': baseInfo.changeRecentDay>0,'text-danger': baseInfo.changeRecentDay<0 }">
+                        <span v-if="baseInfo.changeRecentDay>0">+</span><span>{{parseFloat(baseInfo.changeRecentDay*100).toFixed(2)}}</span>%
+                    </div>
+                </div>
+                <div class="exchange-summary-right">
+                    <div class="exchange-summary-field">
+                        {{$t('volume_24H')}} <span class="exchange-summary-value">{{parseFloat(baseInfo.volumeRecentDay).toFixed(4)}}</span>
+                    </div>
+                    <div class="exchange-summary-field">
+                        {{$t('highest_price_24H')}} <span class="exchange-summary-value">{{parseFloat(baseInfo.maxPriceRecentDay).toFixed(8)}}</span>
+                    </div>
+                    <div class="exchange-summary-field">
+                        {{$t('lowest_price_24H')}} <span class="exchange-summary-value">{{parseFloat(baseInfo.minPriceRecentDay).toFixed(8)}}</span>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <table class="exchange-table-header navigator">
+                <tr>
+                    <th v-bind:class="{ active: mobile.summaryActive === 'candlestick' }" @click="mobile.summaryActive = 'candlestick'"><i class="fa fa-bar-chart"></i> {{$t('K_line_chart')}}</th>
+                    <th v-bind:class="{ active: mobile.summaryActive === 'order' }" @click="mobile.summaryActive = 'order'"><i class="fa fa-list-ul"></i> {{$t('orders')}}</th>
+                    <th v-bind:class="{ active: mobile.summaryActive === 'history' }" @click="mobile.summaryActive = 'history'"><i class="fa fa-history"></i> {{$t('history')}}</th>
+                    <th v-bind:class="{ active: mobile.summaryActive === 'description' }" @click="mobile.summaryActive = 'description'"><i class="fa fa-info-circle"></i> {{$t('mobile_token_introduction')}}</th>
+                </tr>
+            </table>
+
+            <table class="exchange-table-history" v-if="mobile.summaryActive === 'history'">
+                <thead>
+                    <tr>
+                        <th>{{$t('date')}}</th>
+                        <th>{{$t('price')}}(EOS)</th>
+                        <th>{{$t('amount')}}({{tokenId}})</th>
+                    </tr>
+                </thead>
+
+        </div>
+    </div>
+    <div v-if="mobile.nav === 'summary'" class="avoid-the-header">
+        <table class="exchange-table-header" v-if="mobile.summaryActive === 'order'">
+            <tr>
+                <th>{{$t('buy')}}{{$t('amount')}}({{tokenId}})</th>
+                <th>{{$t('price')}}(EOS)</th>
+                <th>{{$t('sell')}}{{$t('amount')}}({{tokenId}})</th>
+            </tr>
+        </table>
+
+        <div class="exchange-table-data-outer" v-if="mobile.summaryActive === 'order'">
+            <div class="exchange-table-data-left">
+                <table class="exchange-table-data">
+                    <tr v-for="(x, i) in buyOrders" :key="i" v-if="control.order !== 'sell'" v-on:click="setPublish(x.unitPrice, x.amount, x.total)" :style="'background: linear-gradient(to left, RGBA(82,177,109,.2) ' + getcolorOccupationRatio(x.amount,maxAmountBuyOrder) + ', #fff ' + getcolorOccupationRatio(x.amount,maxAmountBuyOrder) + ')'">
+                        <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                        <td>{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="exchange-table-data-right">
+                <table class="exchange-table-data">
+                    <tr v-for="(x, i) in sellOrders" :key="i" v-on:click="setPublish(x.unitPrice, x.amount, x.total)" :style="'background: linear-gradient(to left, RGBA(232,18,52,.2) ' + getcolorOccupationRatio(x.amount,maxAmountSellOrder) + ', #fff ' + getcolorOccupationRatio(x.amount,maxAmountSellOrder) + ')'">
+                        <td>{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                        <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="mobile-chart chart" v-bind:class="{'full-screen':isMobileCandlestickFullScreen}" v-show="mobile.summaryActive === 'candlestick'">
+            <div class="full-screen-btn-box">
+                <i class="fa fa-expand" v-bind:class="{'fa-expand':!isMobileCandlestickFullScreen,'fa-compress':isMobileCandlestickFullScreen}" aria-hidden="true" @click="isMobileCandlestickFullScreen=!isMobileCandlestickFullScreen"></i>
+            </div>
+
+            <div class="interval" id="interval">
+                <span v-bind:class="{ 'active': chart.interval === 1 }" @click="chart.interval = 1">{{$t('k_1m')}}</span>
+                <span v-bind:class="{ 'active': chart.interval === 5 }" @click="chart.interval = 5">{{$t('k_5m')}}</span>
+                <span v-bind:class="{ 'active': chart.interval === 15 }" @click="chart.interval = 15">{{$t('k_15m')}}</span>
+                <span v-bind:class="{ 'active': chart.interval === 30 }" @click="chart.interval = 30">{{$t('k_30m')}}</span>
+                <span v-bind:class="{ 'active': chart.interval === 60 }" @click="chart.interval = 60">{{$t('mobile_k_H',{n:1})}}</span>
+                <span v-bind:class="{ 'active': chart.interval === 240 }" @click="chart.interval = 240">{{$t('mobile_k_H',{n:4})}}</span>
+                <span v-bind:class="{ 'active': chart.interval === 1440 }" @click="chart.interval = 1440">{{$t('mobile_k_D',{n:1})}}</span>
+                <span v-bind:class="{ 'active': chart.interval === 10080 }" @click="chart.interval = 10080">{{$t('mobile_k_W',{n:1})}}</span>
+                <span v-bind:class="{ 'active': chart.interval === 43200 }" @click="chart.interval = 43200">{{$t('mobile_k_M',{n:1})}}</span>
+            </div>
+            <div id="tv_chart_container"></div>
+        </div>
+
+        <table class="exchange-table-history" v-if="mobile.summaryActive === 'history'">
+            <thead>
+                <tr>
+                    <th>{{$t('date')}}</th>
+                    <th>{{$t('price')}}(EOS)</th>
+                    <th>{{$t('amount')}}({{tokenId}})</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(x, i) in latestTransactions" :key="i">
+                    <td>{{formatShortTime(x.time)}}</td>
+                    <td v-bind:class="{'text-success':x.growing,'text-danger':!x.growing}">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                    <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="exchange-description" v-if="mobile.summaryActive === 'description'">
+            <div class="exchange-description-icon-outer">
+                <img :src="baseInfo.iconSrc" />
+                <span class="exchange-description-symbol">{{tokenId}}</span>
+            </div>
+            <div class="exchange-description-content">{{baseInfo.description}}</div>
+            <hr />
+            <table class="exchange-description-table">
+                <tr>
+                    <td>{{$t('total_circulation')}}</td>
+                    <td>{{baseInfo.totalSupply}}</td>
+                </tr>
+                <tr>
+                    <td>{{$t('total_liquidity')}}</td>
+                    <td>{{baseInfo.totalCirculate}}</td>
+                </tr>
+                <tr>
+                    <td>{{$t('contract_name')}}</td>
+                    <td>{{baseInfo.contract.transfer}}</td>
+                </tr>
+                <tr>
+                    <td>{{$t('official_website')}}</td>
+                    <td><a :href="baseInfo.website">{{baseInfo.website}}</a></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="exchange-buttons">
+            <div class="exchange-buttons-item green" @click="mobile.exchangeMode = 'buy'; mobile.nav = 'exchange'; buyAndSellStatus = true;">{{$t('buy')}}</div>
+            <div class="exchange-buttons-item red" @click="mobile.exchangeMode = 'sell'; mobile.nav = 'exchange';  buyAndSellStatus = false;">{{$t('sell')}}</div>
+        </div>
+    </div>
+    <div v-if="mobile.nav === 'exchange'">
+        <div class="exchange-container">
+            <div class="exchange-main-left">
+                <div class="exchange-main-row">
+                    <div class="exchange-type-button" @click="buyAndSellStatus = true;" v-bind:class="{  'exchange-type-button active':  buyAndSellStatus }">{{$t('buy')}}</div>
+                    <div class="exchange-type-button" @click="buyAndSellStatus = false;" v-bind:class="{  'exchange-type-button active':  !buyAndSellStatus }">{{$t('sell')}}</div>
+                    <div class="clear"></div>
+                </div>
+                <div class="exchange-main-row">
+                    <div class="exchange-type-button active">{{$t('limit_price')}}</div>
+                    <!--<div class="exchange-type-button">市价</div>-->
+                    <div class="clear"></div>
+                </div>
+                <!--Buy-->
+                <div v-if="buyAndSellStatus">
+                    <div class="exchange-main-row">
+                        <div class="exchange-main-row-label">{{$t('exchange_price')}}</div>
+                        <div class="exchange-main-amount-decrease" @click="inputs.buyPrice = Number(inputs.buyPrice) - 0.00000001; inputs.buyPrice = inputs.buyPrice.toFixed(8)">-</div>
+                        <div class="exchange-main-amount-textbox">
+                            <input v-if="control.trade === 'limit'" @blur="handleBlur('buyPrice')" @input="handlePriceChange('buy')" v-model="inputs.buyPrice" type="number" autocomplete="off" step="0.0001" min="0.0001">
+                            <input v-else :placeholder="$t('best_buy_price')" disabled="true">
+                        </div>
+                        <div class="exchange-main-amount-increase" @click="inputs.buyPrice = Number(inputs.buyPrice) + 0.00000001; inputs.buyPrice = inputs.buyPrice.toFixed(8)">+</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="exchange-main-row">
+                        <div class="exchange-main-row-label">{{$t('exchange_amount')}}({{tokenId}})</div>
+                        <div class="exchange-main-amount-textbox no-border-right">
+                            <input @blur="handleBlur('buyAmount', 4)" @input="handleAmountChange('buy')" v-model="inputs.buyAmount" type="number" autocomplete="off" step="0.0001" min="0.0001" class="text-align-left">
+                        </div>
+                        <div class="exchange-main-amount-token">{{tokenId}}</div>
+                        <div class="clear"></div>
+                        <div class="exchange-main-row-hint">≈ {{inputs.buyTotal}} EOS</div>
+                    </div>
+                    <div class="exchange-main-row">
+                        <div v-for="x in [0.25, 0.50, 0.75, 1.00]" class="exchange-type-button sm col-4" @click="handlePrecentChange('buyPrecent',x)" :class="{'outline-button-active': buyPrecent === x}">{{x*100}}%</div>
+                        <div class="clear"></div>
+                        <div class="exchange-main-row-label">{{$t('balance')}}: {{parseFloat(eosBalance).toFixed(4)}} EOS</div>
+                    </div>
+                </div>
+                <!--Sell-->
+                <div v-else>
+                    <div class="exchange-main-row">
+                        <div class="exchange-main-row-label">{{$t('exchange_sellprice')}}</div>
+                        <div class="exchange-main-amount-decrease" @click="inputs.sellPrice = Number(inputs.sellPrice) - 0.00000001; inputs.sellPrice = inputs.sellPrice.toFixed(8)">-</div>
+                        <div class="exchange-main-amount-textbox">
+                            <input v-if="control.trade === 'limit'" @blur="handleBlur('sellPrice')" @input="handlePriceChange('sell')" v-model="inputs.sellPrice" type="number" autocomplete="off" step="0.0001" min="0.0001">
+                            <input v-else :placeholder="$t('best_sell_price')" disabled="true">
+                        </div>
+                        <div class="exchange-main-amount-increase" @click="inputs.sellPrice = Number(inputs.sellPrice) +     0.00000001; inputs.sellPrice = inputs.sellPrice.toFixed(8)">+</div>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="exchange-main-row">
+                        <div class="exchange-main-row-label">{{$t('exchange_sellamount')}}({{tokenId}})</div>
+                        <div class="exchange-main-amount-textbox no-border-right">
+                            <input @blur="handleBlur('sellAmount', 4)" @input="handleAmountChange('sell')" v-model="inputs.sellAmount" type="number" autocomplete="off" step="0.0001" min="0.0001" class="text-align-left">
+                        </div>
+                        <div class="exchange-main-amount-token">{{tokenId}}</div>
+                        <div class="clear"></div>
+                        <div class="exchange-main-row-hint">≈ {{inputs.sellTotal}} EOS</div>
+                    </div>
+                    <div class="exchange-main-row">
+                        <div v-for="x in [0.25, 0.50, 0.75, 1.00]" class="exchange-type-button sm col-4" @click="handlePrecentChange('sellPrecent',x)" :class="{'outline-button-active': sellPrecent === x}">{{x*100}}%</div>
+                        <div class="clear"></div>
+                        <div class="exchange-main-row-label">{{$t('balance')}}: {{parseFloat(tokenBalance).toFixed(4)}} {{tokenId}}</div>
+                    </div>
+                </div>
+                <div class="exchange-main-row">
+                    <button v-if="isSignedIn & buyAndSellStatus" @click="exchangeBuy" class="btn exchange-main-button green">{{$t('buy')}}</button>
+                    <button v-else-if="isSignedIn & !buyAndSellStatus" @click="exchangeSell" class="btn exchange-main-button red">{{$t('sell')}}</button>
+                    <button v-else @click="$root.login" type="button" class="exchange-main-button">{{$t('sign_trade')}}</button>
+                </div>
+            </div>
+            <div class="exchange-main-right">
+                <table class="exchange-main-delegate-table">
+                    <thead>
+                        <tr>
+                            <th>{{$t('price')}}(EOS)</th>
+                            <th>{{$t('amount')}}({{tokenId}})</th>
+                        </tr>
+                    </thead>
+
+                    <tbody v-if="control.order !== 'buy'">
+                        <tr v-for="(x, i) in sellOrders" :key="i" v-on:click="setPublish(x.unitPrice, x.amount, x.total)" :style="'background: linear-gradient(to left, RGBA(232,18,52,.2) ' + getcolorOccupationRatio(x.amount,maxAmountSellOrder) + ', #FFFFFF ' + getcolorOccupationRatio(x.amount,maxAmountSellOrder) + ')'" style="background: linear-gradient(to left, rgb(249,237,235) 33%, rgb(255,255,255) 33%);">
+                            <td class="text-danger">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                            <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="exchange-main-delegate-latest">
+                    <span class="text-success" v-if="latestTransactions[0]?latestTransactions[0].growing:true">{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed(8)}} ↑</span>
+                    <span class="text-danger" v-else>{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed(8)}} ↓</span>
+                </div>
+                <table class="exchange-main-delegate-table">
+                    <tbody>
+                        <tr style="background: linear-gradient(to left, rgb(232,247,244) 33%, rgb(255,255,255) 33%);" v-for="(x, i) in buyOrders" :key="i" v-if="control.order !== 'sell'" v-on:click="setPublish(x.unitPrice, x.amount, x.total)" :style="'background: linear-gradient(to left, RGBA(82,177,109,.2) ' + getcolorOccupationRatio(x.amount,maxAmountBuyOrder) + ', #FFFFFF ' + getcolorOccupationRatio(x.amount,maxAmountBuyOrder) + ')'">
+                            <td class="text-success">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                            <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="clear"></div>
+            <table class="exchange-table-header navigator gray">
+                <tr>
+                    <th v-bind:class="{ active: mobile.delegateActive === 'current' }" @click="mobile.delegateActive = 'current'">{{$t('open_orders')}}</th>
+                    <th v-bind:class="{ active: mobile.delegateActive === 'history' }" @click="mobile.delegateActive = 'history'">{{$t('order_history')}}</th>
+                </tr>
+            </table>
+            <div v-if="mobile.delegateActive === 'current'">
+                <div v-for="(x, i) in openOrders" :key="i" class="exchange-main-current-item">
+                    <div class="exchange-main-current-item-header">
+                        <span :class="{'text-danger': x.type === 'sell', 'text-success': x.type === 'buy'}">{{x.type === 'sell' ? $t('sell'): $t('buy')}}</span>
+                        <span class="exchange-main-current-item-token-pair">{{x.symbol}}/EOS</span>
+                        <span class="exchange-main-current-item-date">{{formatTime(x.time)}}</span>
+                        <button class="btn btn-primary btn-sm cancel-btn" v-on:click="exchangeCancel(x.symbol, x.type, x.id)">{{$t('cancel')}}</button>
+                    </div>
+                    <table class="exchange-main-delegate-detail-table">
+                        <tr class="field">
+                            <td>{{$t('unit_price')}}</td>
+                            <td>{{$t('quantity')}}</td>
+                            <td>{{$t('total_price')}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{parseFloat(x.price).toFixed(8)}}</td>
+                            <td>{{parseFloat(x.amount).toFixed(4)}} {{x.symbol}}</td>
+                            <td>{{parseFloat(x.total).toFixed(4)}} EOS</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div v-if="openOrders.length === 0">
+                    <p colspan="9" class="text-center">{{$t('noData')}}</p>
+                </div>
+            </div>
+            <div v-if="mobile.delegateActive === 'history'">
+                <div v-for="(x, i) in orderHistory" :key="i" class="exchange-main-current-item">
+                    <div class="exchange-main-current-item-header">
+                        <span class="exchange-main-current-item-tag-red" :class="{'text-danger': x.type === 'sell', 'text-success': x.type === 'buy'}">{{x.type === 'sell' ? $t('sell'): $t('buy')}}</span>
+                        <span class="exchange-main-current-item-token-pair">{{x.symbol}}/EOS</span>
+                        <span class="exchange-main-current-item-date">{{formatTime(x.time)}}</span>
+                        <span class="mini-text red">{{$t('deal_done')}}</span>
+                    </div>
+                    <table class="exchange-main-delegate-detail-table">
+                        <tr class="field">
+                            <td>{{$t('unit_price')}}</td>
+                            <td>{{$t('quantity')}}</td>
+                            <td>{{$t('handling_fee')}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                            <td>{{parseFloat(x.amount).toFixed(4)}} {{x.symbol}}</td>
+                            <td>{{$t('free')}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div v-if="orderHistory.length === 0">
+                    <p colspan="9" class="text-center">{{$t('noData')}}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

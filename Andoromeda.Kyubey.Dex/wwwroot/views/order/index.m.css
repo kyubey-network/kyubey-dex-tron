@@ -1,0 +1,125 @@
+.order-header {
+    padding: 15px 0;
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    border-bottom: 1px solid #f8f8f8;
+}
+.home-token-list {
+    background: #fff;
+    padding: 10px 0;
+}
+
+.home-token-filter {
+    color: #aaa;
+    width: 100%;
+    font-size: 12px;
+    text-align: center;
+    table-layout: fixed;
+}
+
+    .home-token-filter tr td.active {
+        color: #2C8CE3;
+    }
+
+.home-token-filter tr td:first-child {
+    border-right: 1px solid #ccc;
+}
+
+.home-token-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    margin-top: 3.5rem;
+}
+
+    .home-token-table tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .home-token-table td {
+        font-size: 12px;
+        padding: 10px 15px;
+    }
+
+.token-pair {
+    line-height: 20px;
+}
+
+.token-volume {
+    color: #aaa;
+    line-height: 20px;
+    font-size: 10px;
+}
+
+.token-change {
+    border-radius: 3px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 14px;
+    text-align: center;
+    padding: 8px;
+}
+
+    .token-change.green {
+        background: #59c54a;
+    }
+
+    .token-change.red {
+        background: #c54a4a;
+    }
+
+    .token-change.gray{
+        background: #A7A7A7;
+    }
+
+.token-pair-cell {
+    min-width: 180px;
+}
+
+.token-price-cell {
+    text-align: right;
+}
+
+.token-change-cell {
+    max-width: 90px;
+}
+
+.home-more-tokens {
+    color: #2C8CE3;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 10px 0;
+}
+
+.no-more-notice {
+    color: #aaaaaa;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 10px 0;
+}
+
+.home-more-tokens:hover {
+    background-color: #FAFAFA;
+}
+.green {
+    color: #59C54A;
+}
+.red {
+    color: #D7523D;
+}
+.gray {
+    color: #aaaaaa;
+}
+.normal-text {
+    font-size: 14px;
+}
+.mini-text {
+    font-size: 12px
+}
+.cancel-btn {
+    padding: 3px 15px;
+    font-size: 12px;
+}

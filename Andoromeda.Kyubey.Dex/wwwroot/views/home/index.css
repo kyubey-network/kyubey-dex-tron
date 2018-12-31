@@ -1,0 +1,167 @@
+.home-page section {
+    padding: 2rem 4rem;
+}
+
+.home-page .table-container {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    box-shadow: 3px 3px 11px 5px rgba(218,216,216,0.5);
+}
+
+.home-page table {
+    font-size: 12px;
+}
+
+.home-page .table th, .table td {
+    text-align: right;
+    vertical-align: middle !important;
+}
+
+.home-page thead {
+    background: rgba(242,242,242,1);
+}
+
+.table-title-container {
+    padding: 0 4rem;
+    background: #ECECEC;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.home-page td, .home-page th {
+    text-align: right;
+}
+
+.home-page .banner {
+    width: 100%;
+    background: #313131;
+    color: #ffffff;
+    padding: 4rem 0 2rem 0;
+}
+
+    .home-page .banner .t1 {
+        color: #FFB500;
+        margin-bottom: 10px;
+    }
+
+    .home-page .banner .t2 {
+        font-weight: normal !important;
+    }
+
+    .home-page .banner .t3 {
+        margin-bottom: 10px;
+    }
+
+.eos-img {
+    width: 16px;
+}
+
+.my-input {
+    -webkit-appearance: none;
+    background-color: #fff;
+    background-image: none;
+    border-radius: 10px;
+    border: 1px solid #dcdfe6;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: none;
+    padding: 0 0.7rem;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+}
+
+.banner-box {
+    background: #242424;
+    color: #fff;
+}
+
+.banner-box-inner {
+    width: 100%;
+    display: flex;
+    padding: 10px 0;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+}
+
+.more-text {
+    color: #FFB500;
+    height: 25px;
+    line-height: 25px;
+    cursor: pointer;
+}
+
+.home-news {
+    height: 25px;
+    line-height: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    cursor: pointer;
+}
+
+    .home-news::before {
+        font-family: 'FontAwesome';
+        content: "\f06a";
+        color: #5E9FCD;
+        font-size: 18px;
+        margin-right: 5px;
+    }
+
+.serach-btn {
+    position: relative;
+}
+
+    .serach-btn button {
+        color: #ccc;
+        position: absolute;
+        border-style: none;
+        border-width: 0;
+        right: 4px;
+        background: #fff;
+    }
+
+        .serach-btn button:hover {
+            color: #000;
+        }
+
+.my-separator {
+    line-height: 100%;
+    text-align: center;
+}
+
+.my-line {
+    display: inline-block;
+    height: 42%;
+    width: 1px;
+    background: #313131;
+}
+
+.my-tab {
+    height: 100%;
+    box-sizing: border-box;
+    border-bottom: 4px solid #ECECEC;
+    cursor: pointer;
+}
+
+    .my-tab-active, .my-tab:hover {
+        border-bottom: 4px solid #FFB500;
+    }
+
+.hover-display {
+    display: none;
+}
+
+.token-row:hover .hover-hidden {
+    display: none;
+}
+
+.token-row:hover .hover-display {
+    display: block;
+}

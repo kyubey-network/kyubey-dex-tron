@@ -1,0 +1,96 @@
+﻿<div v-on:scroll.passive="onScroll">
+    <div class="header" v-bind:class="{ 'shadow': onScroll != 0 }">
+        <div class="market-header ">
+            <table class="market-filter">
+                <tr v-show="mobile.mode === 'normal'">
+                    <td>
+                        <img src="/img/home-page/eos.png" />
+                        <span v-if="control.fav">
+                            {{$t('optional')}}
+                        </span>
+                        <span v-else>
+                            EOS
+                        </span>
+                    </td>
+                    <td v-if="!control.fav" @click="mobile.mode = 'search'; focusMobileSearch();" class="market-filter-search-cell">
+                        <i class="fa fa-search"></i>
+                    </td>
+                    <td scope="col" v-if="isSignedIn" @click="filterFav" style="cursor: pointer;" class="market-filter-search-cell">
+                        <i class="favorites-button fa" :class="{'favorites-button-active': control.fav}"></i>
+                    </td>
+                </tr>
+                <tr v-show="mobile.mode !== 'normal'">
+                    <td><i class="fa fa-search"></i></td>
+                    <td>
+                        <input id="mobileTokenSearch" class="market-search-textbox" type="search" :placeholder="$t('token')" name="name" v-model="searchText" @keyup.enter="searchToken" @input="searchToken" />
+                    </td>
+                    <td @click="mobile.mode = 'normal'; searchText = ''; searchToken();" class="market-filter-close-cell"><i class="fa fa-close"></i></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="market-token-list" v-show="mobile.mode === 'normal' && !control.fav">
+            <table class="market-token-header">
+                <tr>
+                    <td>{{$t('trading_pair')}}</td>
+                    <td scope="col" class="d-flex align-items-center justify-content-end">
+                        <span @click="sortTokenOnClick('volume_recent_day')" style="cursor:pointer">{{$t('volume_24H')}}</span>
+                        <div class="d-flex flex-column align-items-center ml-1">
+                            <div class="p-0 m-0 up-icon" style="height: 8px;" :class="{'sort-icon-active': sortControl.desc === 1&&sortControl.row === 'volume_recent_day'}" @click="sortToken('volume_recent_day', 1)">
+                                <i class="fa fa-caret-up"></i>
+                            </div>
+                            <div class="p-0 m-0 down-icon" style="height: auto;" :class="{'sort-icon-active': sortControl.desc === 2&&sortControl.row === 'volume_recent_day'}" @click="sortToken('volume_recent_day', 2)">
+                                <i class="fa fa-caret-down"></i>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{$t('latest_price')}}</td>
+                    <td scope="col" class="d-flex align-items-center justify-content-end">
+                        <span @click="sortTokenOnClick('change_recent_day')" style="cursor:pointer">{{$t('ups_downs_24H')}}</span>
+                        <div class="d-flex flex-column align-items-center ml-1">
+                            <div class="p-0 m-0 up-icon" style="height: 8px;" :class="{'sort-icon-active': sortControl.desc === 1&&sortControl.row === 'change_recent_day'}" @click="sortToken('change_recent_day', 1)">
+                                <i class="fa fa-caret-up"></i>
+                            </div>
+                            <div class="p-0 m-0 down-icon" style="height: auto;" :class="{'sort-icon-active': sortControl.desc === 2&&sortControl.row === 'change_recent_day'}" @click="sortToken('change_recent_day', 2)">
+                                <i class="fa fa-caret-down"></i>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    
+
+    <div class="market-token-list" v-bind:class="{ 'result-list': mobile.mode === 'normal' , 'result-list-search': mobile.mode !== 'normal' , 'result-list-favorites': control.fav }">
+        
+        <div v-if="tokenTable.length === 0 && control.fav" class="collection-is-empty">
+            <p>{{$t('favorites_slogan')}}</p>
+            <button @click="filterFav" class="btn">{{$t('ok')}}</button>
+        </div>
+
+        <table class="market-token-table">
+            <tr v-for="(item, index) in tokenTable" :key="index"
+                @click="$root.redirect('/exchange/:id', '/exchange/' + item.symbol, { id: item.symbol }, {})">
+                <td class="token-pair-cell">
+                    <div class="token-pair">
+                        <i class="my-star" :class="{'my-star-active': favoriteObj[item.symbol]}" @click.stop="toggleFav(item.symbol)" v-if="isSignedIn"></i>
+                        {{item.symbol}}/EOS
+                    </div>
+                    <div class="token-volume">{{$t('volume_24H') +': '+item.volume_recent_day.toFixed(4)}} {{item.symbol}}</div>
+                </td>
+                <td class="token-price-cell">{{item.current_price}} {{item.symbol}}</td>
+                <td class="token-change-cell">
+                    <div v-bind:class="{ 'token-change green': item.up , 'token-change red': item.down , 'token-change gray':!item.down&!item.up }">{{item.change_recent_day}}</div>
+                </td>
+            </tr>
+            <tr v-if="tokenTable.length === 0 && !control.fav">
+                <td>
+                    {{$t('no_result')}}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

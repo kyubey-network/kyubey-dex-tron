@@ -1,0 +1,178 @@
+.order-page-container {
+    background-color: #ffffff;
+}
+
+.order-page-header {
+    padding: 20px 40px;
+    background-color: #F2F2F2;
+    text-align: left;
+}
+
+.search-container {
+    font-size: 14px;
+    padding: 20px 40px 0 40px;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+input::-webkit-input-placeholder {
+    font-size: 14px;
+}
+
+input::-moz-placeholder {
+    font-size: 14px;
+}
+
+input:-ms-input-placeholder {
+    font-size: 14px;
+}
+
+.my-card-header {
+    padding: 2px 40px;
+    height: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    font-size: 14px;
+}
+
+.header-text-color {
+    color: #353535;
+}
+
+.border-button {
+    padding: 2px 6px;
+    box-sizing: border-box;
+    border: 1px solid #ffffff;
+    margin-right: 4px;
+    cursor: pointer;
+}
+
+    .border-button:hover, .border-button-active {
+        color: #FFB500;
+        border: 1px solid #FFB500;
+        border-radius: 2px;
+    }
+
+.order-page {
+    width: 1260px;
+    margin: 0 auto;
+    padding: 100px 0px 67px 0px;
+}
+
+    .order-page th {
+        border-bottom: none !important;
+        font-weight: normal;
+    }
+
+.pagination {
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+    .pagination > li {
+        display: inline;
+    }
+
+        .pagination > li > a, .pagination > li > span {
+            font-size: 12px;
+            position: relative;
+            float: left;
+            padding: 4px 8px;
+            margin-left: 10px;
+            line-height: 1.42857143;
+            color: #ced4da;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #E5E5E5;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+            .pagination > li > span:hover:not(.not-allowed) {
+                z-index: 2;
+                color: #ffffff;
+                background-color: #FFC600;
+                border-color: #FFC600;
+            }
+
+.pagination-active {
+    color: #ffffff !important;
+    background-color: #FFC600 !important;
+    border-color: #FFC600 !important;
+}
+
+table {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.not-allowed {
+    cursor: not-allowed !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0;
+}
+
+.order-table {
+    font-size: 14px;
+}
+
+.page-jump {
+    color: #898989;
+    margin-left: 10px;
+}
+
+.to-text {
+    margin: 0 5px;
+}
+
+.jump-input {
+    width: 30px;
+    display: inline-block;
+    padding: 0;
+    text-align: center;
+    height: auto;
+}
+
+.cancel-btn {
+    font-size: 12px;
+}
+
+.form-control {
+    font-size: 14px !important;
+}
+
+input, input:focus {
+    outline: none;
+}
+
+    input.form-control:focus {
+        outline: none;
+        box-shadow: none;
+        border-color: #cccccc;
+    }
+
+.datepicker-days, .datepicker-months, .datepicker-years, .datepicker-decades, .datepicker-centuries {
+    font-size: 12px !important;
+}
+
+.datepicker {
+    z-index: 1040 !important;
+}
+
+.search-button {
+    height: calc(2.25rem + 2px);
+    min-width: 80px;
+}
+
+.custom-select:focus {
+    box-shadow: none !important;
+}

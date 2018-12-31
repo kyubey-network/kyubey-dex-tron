@@ -1,0 +1,90 @@
+<div>
+    <div class="order-header">
+        <table class="home-token-filter">
+            <tr>
+                <td :class = "[control.type === 'open' ? 'active' : '']" @click="control.type = 'open'">{{$t('open_orders')}}</td>
+                <td :class = "[control.type === 'history' ? 'active' : '']" @click="control.type = 'history'">{{$t('order_history')}}</td>
+            </tr>
+        </table>
+    </div>
+    <!-- current orders -->
+    <table v-if="control.type === 'open'" class="home-token-table">
+        <tr v-for="(x, i) in openOrders" :key="i">
+            <div class="w-100 p-3 d-flex justify-content-between" style="font-size: 0;">
+                <div class="d-inline-block" style="width: 6%">
+                    <span :class="{'red': x.type === 'sell', 'green': x.type === 'buy'}" class="normal-text">{{x.type === 'sell' ? $t('sell_word'): $t('buy_word')}}</span>
+                </div>
+                <div class="d-inline-block" style="width: 94%">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <span class="normal-text mr-2">{{x.symbol}}/EOS</span>
+                            <span class="mini-text gray">{{formatTime(x.time)}}</span>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm cancel-btn" v-on:click="exchangeCancel(x.symbol, x.type, x.id)">{{$t('cancel')}}</button>
+                    </div>
+                    <div class="d-flex justify-content-between mini-text">
+                        <div>
+                            <div class="gray">{{$t('unit_price')}}(EOS)</div>
+                            <div>{{parseFloat(x.price).toFixed(8)}}</div>
+                        </div>
+                        <div>
+                            <div class="gray">{{$t('unfilled_amount')}}({{x.symbol}})</div>
+                            <div>{{parseFloat(x.amount).toFixed(4)}}</div>
+                        </div>
+                        <div>
+                            <div class="gray">{{$t('unfilled_money')}}({{x.symbol}})</div>
+                            <div>{{parseFloat(x.total).toFixed(8)}}</div>
+                        </div>
+                                
+                    </div>
+                </div>
+            </div>
+        </tr>
+        <tr v-if="openOrders.length === 0">
+            <td class="text-center">{{$t('noData')}}</td>
+        </tr>
+    </table>
+    <!-- history orders -->
+    <table v-if="control.type === 'history'" class="home-token-table">
+        <tr v-for="(x, i) in historyOrders" :key="i">
+            <div class="w-100 p-3 d-flex justify-content-between" style="font-size: 0;">
+                <div class="d-inline-block" style="width: 6%">
+                    <span :class="{'red': x.type === 'sell', 'green': x.type === 'buy'}" class="normal-text">{{x.type === 'sell' ? $t('sell_word'): $t('buy_word')}}</span>
+                </div>
+                <div class="d-inline-block" style="width: 94%">
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <span class="normal-text mr-2">{{x.symbol}}/EOS</span>
+                            <span class="mini-text gray">{{formatTime(x.time)}}</span>
+                        </div>
+                        <div>
+                            <span class="mini-text red">{{$t('deal_done')}}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mini-text">
+                        <div>
+                            <div class="gray">{{$t('unit_price')}}(EOS)</div>
+                            <div>{{parseFloat(x.unitPrice).toFixed(8)}}</div>
+                        </div>
+                        <div>
+                            <div class="gray">{{$t('transaction_volume')}}({{x.symbol}})</div>
+                            <div>{{parseFloat(x.amount).toFixed(4)}}</div>
+                        </div>
+                        <div>
+                            <div class="gray">{{$t('transaction_money')}}(EOS)</div>
+                            <div>{{parseFloat(x.total).toFixed(8)}}</div>
+                        </div>
+                                
+                    </div>
+                </div>
+            </div>
+        </tr>
+        <template v-if="openOrders.length > 0">
+            <div v-if="pageIndex * pageSize < pageTotal" class="home-more-tokens" v-on:click="moreOrders">{{$t('more')}} &gt;</div>
+            <div v-else class="no-more-notice">{{$t('to_bottom_notice')}}</div>
+        </template>
+        <tr v-if="openOrders.length === 0">
+            <td class="text-center">{{$t('noData')}}</td>
+        </tr>
+    </table>
+</div>

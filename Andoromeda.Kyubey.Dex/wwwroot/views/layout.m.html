@@ -1,0 +1,77 @@
+﻿<div>
+    <div class="mobile-page">
+        <router-view></router-view>
+        <div class="mobile-copyright">
+            <div class="footer-language-selector" @click="$root.showMobileLanguageSelector">
+                <img src="/img/more/language.svg" alt="" class="mr-2"><span class="mr-2">{{$t('current_language')}}</span><i class="fa fa-caret-down" aria-hidden="true"></i>
+            </div>
+            <div>{{$t('turnover_24H')}}{{parseFloat($root.volume).toFixed(4)}} EOS</div>
+            <div>{{$t('footer_warning')}}</div>
+            <div>Kyubey {{ new Date().getFullYear() }}.All rights reserved.</div>
+        </div>
+    </div>
+    <div class="tab-outer">
+        <table>
+            <tr>
+                <td @click="$root.redirect('/')">
+                    <div class="tab-item" v-bind:class="{ 'active': $root.mobile.nav === 'home' }">
+                        <img src="/img/home.active.svg" v-if="$root.mobile.nav === 'home'" />
+                        <img src="/img/home.svg" v-if="$root.mobile.nav !== 'home'" />
+                        <div class="tab-item-text">{{$t('mobile_footer_home')}}</div>
+                    </div>
+                </td>
+                <td @click="$root.redirect('/market')">
+                    <div class="tab-item" v-bind:class="{ 'active': $root.mobile.nav === 'market' }">
+                        <img src="/img/market.active.svg" v-if="$root.mobile.nav === 'market'" />
+                        <img src="/img/market.svg" v-if="$root.mobile.nav !== 'market'" />
+                        <div class="tab-item-text">{{$t('mobile_footer_market')}}</div>
+                    </div>
+                </td>
+                <td @click="$root.redirect('/order')">
+                    <div class="tab-item" v-bind:class="{ 'active': $root.mobile.nav === 'order' }">
+                        <img src="/img/order.active.svg" v-if="$root.mobile.nav === 'order'" />
+                        <img src="/img/order.svg" v-if="$root.mobile.nav !== 'order'" />
+                        <div class="tab-item-text">{{$t('mobile_footer_order')}}</div>
+                    </div>
+                </td>
+                <td @click="$root.redirect('/wallet')">
+                    <div class="tab-item" v-bind:class="{ 'active': $root.mobile.nav === 'assets' }">
+                        <img src="/img/assets.active.svg" v-if="$root.mobile.nav === 'assets'" />
+                        <img src="/img/assets.svg" v-if="$root.mobile.nav !== 'assets'" />
+                        <div class="tab-item-text">{{$t('mobile_footer_asset')}}</div>
+                    </div>
+                </td>
+                <td @click="$root.redirect('/home/more')">
+                    <div class="tab-item" v-bind:class="{ 'active': $root.mobile.nav === 'more' }">
+                        <img src="/img/more.active.svg" v-if="$root.mobile.nav === 'more'" />
+                        <img src="/img/more.svg" v-if="$root.mobile.nav !== 'more'" />
+                        <div class="tab-item-text">{{$t('mobile_footer_more')}}</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- start notifications -->
+    <div class="notification" v-bind:class="{ 'active': $root.control.currentNotification !== null, 'pending': $root.control.currentNotification && $root.control.currentNotification.level === 'pending', 'succeeded': $root.control.currentNotification && $root.control.currentNotification.level === 'succeeded', 'warning': $root.control.currentNotification && $root.control.currentNotification.level === 'warning', 'error': $root.control.currentNotification && $root.control.currentNotification.level === 'error', 'important': $root.control.currentNotification && $root.control.currentNotification.level === 'important' }">
+        <div class="notification-title">{{ $root.control.currentNotification ? $root.control.currentNotification.title : null }}</div>
+        <div class="notification-detail" v-if="$root.control.currentNotification && $root.control.currentNotification.detail">{{ $root.control.currentNotification ? $root.control.currentNotification.detail : null }}</div>
+        <div class="notification-button-outer" v-if="$root.control.currentNotification && $root.control.currentNotification.button">
+            <a class="notification-button" v-on:click="clickNotification">{{ $root.control.currentNotification.button }}</a>
+        </div>
+    </div>
+    <!-- end notifications -->
+    <!-- start language-selector -->
+    <div class="modal fade language-selector" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="d-flex flex-column bd-highlight">
+                    <div class="p-2 bd-highlight" @click="$root.setLang('en')" data-dismiss="modal"><a class="#">English</a></div>
+                    <div class="p-2 bd-highlight" @click="$root.setLang('zh')" data-dismiss="modal"><a class="#">简体中文</a></div>
+                    <div class="p-2 bd-highlight" @click="$root.setLang('zh_tw')" data-dismiss="modal"><a class="#">繁体中文</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end language-selector -->
+</div>

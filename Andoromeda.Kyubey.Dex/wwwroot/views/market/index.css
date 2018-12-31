@@ -1,0 +1,97 @@
+.market-page section {
+    padding: 2rem 4rem;
+}
+
+.market-page .table-container {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    box-shadow: 3px 3px 11px 5px rgba(218,216,216,0.5);
+}
+
+.market-page table {
+    font-size: 12px;
+}
+
+.market-page .table th, .table td {
+    text-align: right;
+    vertical-align: middle;
+}
+
+.market-page thead {
+    background: rgba(242,242,242,1);
+}
+
+.table-title-container {
+    padding: 0 4rem;
+    background: #ECECEC;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.market-page td, .market-page th {
+    text-align: right;
+}
+
+.eos-img {
+    width: 16px;
+}
+
+.my-input {
+    -webkit-appearance: none;
+    background-color: #fff;
+    background-image: none;
+    border-radius: 10px;
+    border: 1px solid #dcdfe6;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: none;
+    padding: 0 0.7rem;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+}
+
+.serach-btn {
+    position: relative;
+}
+
+    .serach-btn button {
+        color: #ccc;
+        position: absolute;
+        border-style: none;
+        border-width: 0;
+        right: 4px;
+        background: #fff;
+    }
+
+        .serach-btn button:hover {
+            color: #000;
+        }
+
+.my-separator {
+    line-height: 100%;
+    text-align: center;
+}
+
+.my-line {
+    display: inline-block;
+    height: 42%;
+    width: 1px;
+    background: #313131;
+}
+
+.my-tab {
+    height: 100%;
+    box-sizing: border-box;
+    border-bottom: 4px solid #ECECEC;
+    cursor: pointer;
+}
+
+    .my-tab-active, .my-tab:hover {
+        border-bottom: 4px solid #FFB500;
+    }

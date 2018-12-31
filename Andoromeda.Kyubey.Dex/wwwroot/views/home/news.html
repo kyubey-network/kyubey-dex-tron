@@ -1,0 +1,29 @@
+﻿<div class="bottoming">
+    <div class="paper">
+        <h1>{{$t('announcement_center')}}</h1>
+        <div class="search bar">
+            <form>
+                <input type="text" v-model="keyWords" :placeholder="$t('search')">
+            </form>
+        </div>
+        <template v-for="x in newsForm">
+            <h2>{{ x.title }} <span class="news-right">{{ x.time }}</span></h2>
+            <div class="content-group" v-if="x.expand">
+                <p class="Inline-class" v-html="x.summary"></p>
+                <div class="expand-outer"><a @click="x.expand = !x.expand">{{$t('expand_text')}}<i class="fa fa-caret-down" aria-hidden="true"></i></a></div>
+            </div>
+            <div class="content-group" v-else>
+                <p class="Inline-class" v-html="x.content"></p>
+                <div class="expand-outer"><a @click="x.expand = !x.expand">{{$t('less_full_text')}}<i class="fa fa-caret-up" aria-hidden="true"></i></a></div>
+            </div>
+        </template>
+        <div v-if="boolNoData">
+            <h2>{{ $t('no_result') }}</h2>
+        </div>
+
+
+        <div class="btn-outer" v-if="!noMore">
+            <a href="javascript:;" v-on:click="loadMore()" class="btn btn-default">加载更多</a>
+        </div>
+    </div>
+</div>

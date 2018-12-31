@@ -1,0 +1,376 @@
+﻿<div class="exchange-page mt-60px small">
+    <div class="page-container container" style="padding: 1rem 0;">
+        <div class="row no-gutters">
+            <div class="col-md-12">
+                <div class="card my-card p-3 flex-row justify-content-between" style="margin-bottom: 10px;">
+                    <div class="d-flex align-items-center">
+                        <div class="token-logo" style="margin-right: 20px;">
+                            <img :src="baseInfo.iconSrc" style="width: 50px;" alt="logo">
+                        </div>
+                        <div class="d-inline-block">
+                            <p class="token-title">
+                                <span>{{tokenId}}</span>
+                                <span>/ EOS</span>
+                            </p>
+                            <button @click="showIntroduction = !showIntroduction" type="button" class="btn btn-warning font-weight-bold token-detail-btn" style="font-size: 12px;">{{$t('currency_introduction')}}</button>
+                        </div>
+                    </div>
+                    <div class="infoitem">
+                        <p class="infoitem-title">{{$t('latest_price')}}</p>
+                        <p class="text-success" v-bind:class="{'text-danger': !(latestTransactions[0]?latestTransactions[0].growing:true) }"><span>{{parseFloat(baseInfo.currentPrice).toFixed(8)}}</span> EOS</p>
+                    </div>
+                    <div class="infoitem">
+                        <p class="infoitem-title">{{$t('ups_downs_24H')}}</p>
+                        <p v-bind:class="{ 'text-success': baseInfo.changeRecentDay>0,'text-danger': baseInfo.changeRecentDay<0 }">
+                            <span v-if="baseInfo.changeRecentDay>0">+</span><span>{{parseFloat(baseInfo.changeRecentDay*100).toFixed(2)}}</span>%
+                        </p>
+                    </div>
+                    <div class="infoitem">
+                        <p class="infoitem-title">{{$t('highest_price_24H')}}</p>
+                        <p><span>{{parseFloat(baseInfo.maxPriceRecentDay).toFixed(8)}}</span> EOS</p>
+                    </div>
+                    <div class="infoitem">
+                        <p class="infoitem-title">{{$t('lowest_price_24H')}}</p>
+                        <p><span>{{parseFloat(baseInfo.minPriceRecentDay).toFixed(8)}}</span> EOS</p>
+                    </div>
+                    <div class="infoitem">
+                        <p class="infoitem-title">{{$t('volume_24H')}}</p>
+                        <p><span>{{parseFloat(baseInfo.volumeRecentDay).toFixed(4)}}</span> {{tokenId}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row no-gutters" v-if="showIntroduction">
+            <div class="col-md-12">
+                <div class="card my-card p-3 flex-row" style="margin-bottom: 10px;">
+                    <div class="d-inline-block w-50">
+                        <p>{{$t('token_introduction')}}</p>
+                        <p>{{baseInfo.description}}</p>
+                    </div>
+                    <div class="d-inline-block w-25 pl-5">
+                        <p>{{$t('total_circulation')}}</p>
+                        <p>{{baseInfo.totalSupply}}</p>
+                        <p>{{$t('contract_name')}}</p>
+                        <p>{{baseInfo.contract.transfer}}</p>
+                    </div>
+                    <div class="d-inline-block w-25">
+                        <p>{{$t('total_liquidity')}}</p>
+                        <p>{{baseInfo.totalCirculate}}</p>
+                        <p>{{$t('official_website')}}</p>
+                        <a target="_blank" v-bind:href="baseInfo.website">{{baseInfo.website}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row no-gutters">
+            <div class="col-md-3">
+                <div class="card my-card e-order-card">
+                    <div class="my-card-header">
+                        <a class="order-filter-btn" :class="{ 'order-filter-btn-active': control.order === 'mixed' }" title="Deep" v-on:click="control.order = 'mixed'"><img src="/img/order-mixed.png" /></a>
+                        <a class="order-filter-btn" :class="{ 'order-filter-btn-active': control.order === 'buy' }" title="Buy" v-on:click="control.order = 'buy'"><img src="/img/order-buy.png" /></a>
+                        <a class="order-filter-btn" :class="{ 'order-filter-btn-active': control.order === 'sell' }" title="Sell" v-on:click="control.order = 'sell'"><img src="/img/order-sell.png" /></a>
+                    </div>
+                    <table class="table e-table table-sm table-hover delegate-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{$t('price')}}(EOS)</th>
+                                <th scope="col">{{$t('amount')}}({{tokenId}})</th>
+                                <th scope="col">{{$t('total')}}(EOS)</th>
+                            </tr>
+                        </thead>
+                        <tbody v-if="control.order !== 'buy'">
+                            <tr v-for="(x, i) in sellOrders" :key="i" v-on:click="setPublish(x.unitPrice, x.amount, x.total)" :style="'background: linear-gradient(to left, RGBA(232,18,52,.2) ' + getcolorOccupationRatio(x.amount,maxAmountSellOrder) + ', #292929 ' + getcolorOccupationRatio(x.amount,maxAmountSellOrder) + ')'">
+                                <td style="color: #E23030;">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                                <td>{{parseFloat(x.total).toFixed(4)}}</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr class="delegate-tip">
+                                <td colspan="3" class="e-orders-split text-center">
+                                    <span class="text-success" v-if="latestTransactions[0]?latestTransactions[0].growing:true">{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed(8)}} ↑</span>
+                                    <span class="text-danger" v-else>{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed(8)}} ↓</span>
+                                </td>
+                            </tr>
+                            <tr v-for="(x, i) in buyOrders" :key="i" v-if="control.order !== 'sell'" v-on:click="setPublish(x.unitPrice, x.amount, x.total)" :style="'background: linear-gradient(to left, RGBA(82,177,109,.2) ' + getcolorOccupationRatio(x.amount,maxAmountBuyOrder) + ', #292929 ' + getcolorOccupationRatio(x.amount,maxAmountBuyOrder) + ')'">
+                                <td style="color: #00B54F;">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                                <td>{{parseFloat(x.total).toFixed(4)}}</td>
+                                <i style="width: 100%;height: 100%;background: red;"></i>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card my-card e-chart-card">
+                    <div class="my-card-header header-text-color">
+                        {{$t('k_line')}}
+                    </div>
+                    <div class="container-fluid" style="width:100%; height:417px;padding:0;">
+                        <div class="chart">
+                            <div class="interval" id="interval">
+                                <span v-bind:class="{ 'active': chart.interval === 1 }" @click="chart.interval = 1">{{$t('k_1m')}}</span>
+                                <span v-bind:class="{ 'active': chart.interval === 5 }" @click="chart.interval = 5">{{$t('k_5m')}}</span>
+                                <span v-bind:class="{ 'active': chart.interval === 15 }" @click="chart.interval = 15">{{$t('k_15m')}}</span>
+                                <span v-bind:class="{ 'active': chart.interval === 30 }" @click="chart.interval = 30">{{$t('k_30m')}}</span>
+                                <span v-bind:class="{ 'active': chart.interval === 60 }" @click="chart.interval = 60">{{$t('k_1H')}}</span>
+                                <span v-bind:class="{ 'active': chart.interval === 240 }" @click="chart.interval = 240">{{$t('k_4H')}}</span>
+                                <span v-bind:class="{ 'active': chart.interval === 1440 }" @click="chart.interval = 1440">{{$t('k_1D')}}</span>
+                                <span v-bind:class="{ 'active': chart.interval === 10080 }" @click="chart.interval = 10080">{{$t('k_1W')}}</span>
+                                <span v-bind:class="{ 'active': chart.interval === 43200 }" @click="chart.interval = 43200">{{$t('k_1M')}}</span>
+                            </div>
+                            <div id="tv_chart_container"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card my-card e-submit-card">
+                    <div class="my-card-header header-text-color">
+                        <div @click="control.trade = 'limit'" class="border-button d-inline-block" :class="{'border-button-active': control.trade === 'limit'}">{{$t('limit_order')}}</div>
+                        <div @click="control.trade = 'market'" class="border-button d-inline-block" :class="{'border-button-active': control.trade === 'market'}">{{$t('market_order')}}</div>
+                    </div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6 mt-3 pl-4 pr-4" style="border-right: 1px solid #3E3E3E;">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-green" style="font-size: 16px">
+                                        <b>
+                                            {{$t('buy')}} {{tokenId}}
+                                        </b>
+                                    </span>
+                                    <span style="color: #626262;">{{$t('balance')}}: {{parseFloat(eosBalance).toFixed(4)}} EOS</span>
+                                </div>
+                                <div style="font-size: 0;" class="mb-2">
+                                    <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_price')}}</label>
+                                    <div class="e-input">
+                                        <input v-if="control.trade === 'limit'" @blur="handleBlur('buyPrice')" @input="handlePriceChange('buy')" v-model="inputs.buyPrice" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <input v-else class="e-input-inner" :placeholder="$t('best_buy_price')" disabled="true">
+                                        <span class="e-input-suffix">EOS</span>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0;" class="mb-2" v-if="control.trade === 'limit'">
+                                    <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_amount')}}</label>
+                                    <div class="e-input">
+                                        <input @blur="handleBlur('buyAmount', 4)" @input="handleAmountChange('buy')" v-model="inputs.buyAmount" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <span class="e-input-suffix">{{tokenId}}</span>
+                                    </div>
+                                </div>
+                                <div class="mb-2" :class="{'dn':control.trade==='market'}">
+                                    <div style="margin-left: 70px;" class="d-flex justify-content-between">
+                                        <div v-for="x in [0.25, 0.50, 0.75, 1.00]" class="outline-button" @click="handlePrecentChange('buyPrecent',x)" :class="{'outline-button-active': buyPrecent===x}">{{x*100}}%</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0;" class="mb-2">
+                                    <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_total')}}</label>
+                                    <div class="e-input">
+                                        <input @blur="handleBlur('buyTotal', 4)" @input="handleTotalChange('buy')" v-model="inputs.buyTotal" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <span class="e-input-suffix">EOS</span>
+                                    </div>
+                                </div>
+                                <div class="mb-2" :class="{'dn':control.trade==='limit'}">
+                                    <div style="margin-left: 70px;" class="d-flex justify-content-between">
+                                        <div v-for="x in [0.25, 0.50, 0.75, 1.00]" class="outline-button" @click="handlePrecentChange('buyPrecent',x)" :class="{'outline-button-active': buyPrecent===x}">{{x*100}}%</div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <div style="margin-left: 70px;">
+                                        <button v-if="isSignedIn" @click="exchangeBuy" type="button" class="btn w-100 bg-green text-white">{{$t('buy')}}</button>
+                                        <button v-else @click="$root.login" type="button" class="btn w-100 bg-green text-white">{{$t('sign_trade')}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mt-3 pl-4 pr-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-red" style="font-size: 16px"><b>{{$t('sell')}} {{tokenId}}</b></span>
+                                    <span style="color: #626262;">{{$t('balance')}}: {{parseFloat(tokenBalance).toFixed(4)}} {{tokenId}}</span>
+                                </div>
+                                <div style="font-size: 0;" class="mb-2">
+                                    <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_sellprice')}}</label>
+                                    <div class="e-input">
+                                        <input v-if="control.trade === 'limit'" @blur="handleBlur('sellPrice')" @input="handlePriceChange('sell')" v-model="inputs.sellPrice" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <input v-else class="e-input-inner" :placeholder="$t('best_sell_price')" disabled="true">
+                                        <span class="e-input-suffix">EOS</span>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0;" class="mb-2" v-if="control.trade === 'limit'">
+                                    <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_sellamount')}}</label>
+                                    <div class="e-input">
+                                        <input @blur="handleBlur('sellAmount', 4)" @input="handleAmountChange('sell')" v-model="inputs.sellAmount" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <span class="e-input-suffix">{{tokenId}}</span>
+                                    </div>
+                                </div>
+                                <div class="mb-2" :class="{'dn':control.trade==='market'}">
+                                    <div style="margin-left: 70px;" class="d-flex justify-content-between">
+                                        <div v-for="x in [0.25, 0.50, 0.75, 1.00]" class="outline-button" @click="handlePrecentChange('sellPrecent',x)" :class="{'outline-button-active': sellPrecent===x}">{{x*100}}%</div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0;" class="mb-2">
+                                    <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_total')}}</label>
+                                    <div class="e-input">
+                                        <input @blur="handleBlur('sellTotal', 4)" @input="handleTotalChange('sell')" v-model="inputs.sellTotal" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <span class="e-input-suffix" v-if="control.trade==='limit'">EOS</span>
+                                        <span class="e-input-suffix" v-if="control.trade==='market'">{{tokenId}}</span>
+                                    </div>
+                                </div>
+                                <div class="mb-2" :class="{'dn':control.trade==='limit'}">
+                                    <div style="margin-left: 70px;" class="d-flex justify-content-between">
+                                        <div v-for="x in [0.25, 0.50, 0.75, 1.00]" class="outline-button" @click="handlePrecentChange('sellPrecent',x)" :class="{'outline-button-active': sellPrecent===x}">{{x*100}}%</div>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <div style="margin-left: 70px;">
+                                        <button @click="exchangeSell" v-if="isSignedIn" type="button" class="btn w-100 bg-red text-white">{{$t('sell')}}</button>
+                                        <button v-else @click="$root.login" type="button" class="btn w-100 bg-red text-white">{{$t('sign_trade')}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card my-card e-pair-card">
+                    <div class="my-card-header header-text-color" style="justify-content: space-between;">
+                        <div>
+                            <div @click="control.markets = 'favorite'" class="border-button d-inline-block" :class="{'border-button-active': control.markets !== 'eos'}" v-if="isSignedIn"><i class="fa fa-star-o mr-1"></i>{{$t('favorite')}}</div>
+                            <div @click="control.markets = 'eos'" class="border-button d-inline-block" :class="{'border-button-active': control.markets === 'eos'}">EOS</div>
+                        </div>
+                        <div class="input-container">
+                            <input type="text" class="d-inline-block search-input" v-model="inputs.tokenSearchInput" :placeholder="$t('search')" />
+                        </div>
+                    </div>
+                    <table class="table e-table table-sm table-hover pl-1 scroll-table">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 20px;" v-if="isSignedIn"></th>
+                                <th scope="col" class="text-left">{{$t('market')}}</th>
+                                <th scope="col" class="text-right">{{$t('latest_price')}}</th>
+                                <th scope="col" class="text-right">{{$t('ups_downs')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody style="height: 390px;">
+                            <tr v-for="(x, i) in favoriteListFilter" :key="i"
+                                @click="redirectToDetail(x.symbol)">
+                                <td style="width: 20px;" v-if="isSignedIn">
+                                    <i class="my-star" style="color: #AFAFAF;font-size: 14px;" :class="{'my-star-active': x.favorite}" @click.stop="toggleFav(x.symbol, i)"></i>
+                                </td>
+                                <td class="text-left">{{x.symbol}}/EOS</td>
+                                <td v-bind:class="{'text-success':x.change>0,'text-danger':x.change<0}">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                                <td v-bind:class="{'text-success':x.change>0,'text-danger':x.change<0}">
+                                    <span v-if="x.change>0">+</span>{{parseFloat(x.change*100).toFixed(2)}}%
+                                </td>
+                            </tr>
+                            <tr v-if="favoriteListFilter.length === 0">
+                                <td class="nodata text-center" colspan="3">{{$t('noData')}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card my-card e-transaction-card">
+                    <div class="my-card-header header-text-color">
+                        {{$t('latest_transactions')}}
+                    </div>
+                    <table class="table e-table table-sm table-hover pl-1 scroll-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{$t('price')}}(EOS)</th>
+                                <th scope="col">{{$t('amount')}}({{tokenId}})</th>
+                                <th scope="col">{{$t('date')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody style="height:260px;">
+                            <tr v-for="(x, i) in latestTransactions" :key="i">
+                                <td v-bind:class="{'text-success':x.growing,'text-danger':!x.growing}">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                                <td>{{formatShortTime(x.time)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row no-gutters mt-2" v-if="isSignedIn">
+            <div class="col-md-12">
+                <div class="card my-card">
+                    <div class="my-card-header">{{$t('open_orders')}}</div>
+                    <table class="table e-table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center" scope="col">{{$t('currency')}}</th>
+                                <th class="text-center" scope="col">{{$t('type')}}</th>
+                                <th scope="col">{{$t('release_time')}}</th>
+                                <th scope="col">{{$t('unit_price')}}</th>
+                                <th scope="col">{{$t('quantity')}}</th>
+                                <th scope="col">{{$t('total_price')}}</th>
+                                <th class="text-center" scope="col">{{$t('operation')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(x, i) in openOrders" :key="i">
+                                <td class="text-center">{{x.symbol}}/EOS</td>
+                                <td class="text-center" :class="{'text-danger': x.type === 'sell', 'text-success': x.type === 'buy'}">{{x.type === 'sell' ? $t('sell'): $t('buy')}}</td>
+                                <td>{{formatTime(x.time)}}</td>
+                                <td>{{parseFloat(x.price).toFixed(8)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed(4)}} {{x.symbol}}</td>
+                                <td>{{parseFloat(x.total).toFixed(4)}} EOS</td>
+                                <td class="text-center text-warning" v-on:click="exchangeCancel(x.symbol, x.type, x.id)">{{$t('cancel')}}</td>
+                            </tr>
+                            <tr v-if="openOrders.length === 0">
+                                <td colspan="9" class="text-center">{{$t('noData')}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row no-gutters mt-2" v-if="isSignedIn">
+            <div class="col-md-12">
+                <div class="card my-card">
+                    <div class="my-card-header">{{$t('order_history')}}</div>
+                    <table class="table e-table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th class="text-center" scope="col">{{$t('currency')}}</th>
+                                <th class="text-center" scope="col">{{$t('type')}}</th>
+                                <th scope="col">{{$t('transaction_time')}}</th>
+                                <th scope="col">{{$t('unit_price')}}</th>
+                                <th scope="col">{{$t('transaction_volume')}}</th>
+                                <th scope="col">{{$t('transaction_money')}}</th>
+                                <th scope="col" class="text-center">{{$t('status')}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(x, i) in orderHistory" :key="i">
+                                <td class="text-center">{{x.symbol}}/EOS</td>
+                                <td class="text-center" :class="{'text-danger': x.type === 'sell', 'text-success': x.type === 'buy'}">{{x.type === 'sell' ? $t('sell'): $t('buy')}}</td>
+                                <td>{{formatTime(x.time)}}</td>
+                                <td>{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed(4)}} {{x.symbol}}</td>
+                                <td>{{parseFloat(x.total).toFixed(8)}} EOS</td>
+                                <td class="text-center">{{$t('deal_done')}}</td>
+                            </tr>
+                            <tr v-if="orderHistory.length === 0">
+                                <td colspan="9" class="text-center">{{$t('noData')}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <nav class="text-center" v-if="pageCount>0">
+                        <ul class="pagination">
+                            <li><span :class="{'not-allowed': pageIndex <= 1}" @click="prev"> < </span></li>
+                            <li v-for="i in pageCount" :key="i">
+                                <span :class="{'pagination-active': pageIndex === i}" @click="handlePageChange(i)"> {{i}} </span>
+                            </li>
+                            <li><span :class="{'not-allowed': pageIndex >= pageCount}" @click="next"> > </span></li>
+                            <div class="d-inline-block small page-jump">
+                                <span>{{$t('jump_to')}}</span>
+                                <input class="form-control jump-input" type="number" v-model="jumpPage" @keyup.enter="jump">
+                                <span>{{$t('page')}}</span>
+                            </div>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

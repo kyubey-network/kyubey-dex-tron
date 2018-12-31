@@ -1,0 +1,13 @@
+body {
+    background: none !important;
+}
+
+.chart-page .chart-container {
+    border: none !important;
+}
+
+.button {
+    background: none !important;
+    border-color: #aaa !important;
+}
+

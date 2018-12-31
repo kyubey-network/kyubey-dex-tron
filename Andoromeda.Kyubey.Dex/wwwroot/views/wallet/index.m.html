@@ -1,0 +1,50 @@
+﻿<div class="wallet">
+    <div class="wallet-summary">
+        <div class="wallet-avatar-outer">
+            <img src="/img/avatar.png" class="wallet-avatar" />
+            <span class="wallet-account-name">{{account.name}}</span>
+        </div>
+        <div class="wallet-evaluated-outer">
+            <strong>{{ parseFloat(totalEvaluated).toFixed(4) }}</strong> EOS
+        </div>
+        <div class="wallet-subline-outer">
+            {{$t('current_total_valuation')}}
+        </div>
+    </div>
+    <div class="wallet-token-list">
+        <table class="wallet-token-filter">
+            <tr>
+                <td class="wallet-myasset"><span>{{$t('my_account')}}</span></td>
+                <td>
+                    <div class="search">
+                        <div class="serach-btn">
+                            <input type="search" class="my-input" @keyup="searchToken" :placeholder="$t('token')" name="name" v-model="searchText" />
+                            <button type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table class="wallet-token-table">
+            <tr style="cursor: pointer;" v-for="(item, index) in listWithFiter" :key="index"
+                @click="goToEosExchange(item.symbol)">
+                <td class="wallet-token-cell">
+                    <img :src="item.iconSrc" style="width: 25px; border-radius:50%">
+                    <span :class="[item.symbol === 'EOS' ? 'wallet-EOSsymbol' : 'wallet-notEOSsymbol']">{{item.symbol}}</span>
+                    <div class="wallet-asset-freeze" v-if="item.symbol !== 'EOS'">{{$t('valuation')}} : {{parseFloat(item.eos).toFixed(4)}}</div>
+                </td>
+                <td style="text-align:left">
+                    <div class="wallet-asset-balance">{{$t('balance')}} : {{parseFloat(item.valid).toFixed(4)}}</div>
+                    <div class="wallet-asset-freeze">{{$t('freeze_balance')}} : {{parseFloat(item.freeze).toFixed(4)}}</div>
+                </td>
+            </tr>
+            <tr v-if="listWithFiter.length === 0">
+                <td colspan="4" class="nodata">
+                    {{$t('noData')}}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

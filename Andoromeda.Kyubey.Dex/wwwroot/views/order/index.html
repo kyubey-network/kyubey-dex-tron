@@ -1,0 +1,111 @@
+<div class="order-page">
+  <div class="order-page-container">
+    <div class="order-page-header">
+        <span>{{$t('order_detail')}}</span>
+    </div>
+    <form class="d-flex justify-content-between search-container">
+      <div class="form-group row">
+        <label for="staticEmail" class="col-sm-3 col-form-label nowrap pr-0">{{$t('currency')}}</label>
+        <div class="col-sm-9">
+          <input v-model="search.filterString" type="text" class="form-control" id="staticEmail" :placeholder="$t('please_input_name')">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="inputPassword" class="col-sm-3 col-form-label nowrap">{{$t('type')}}</label>
+        <div class="col-sm-9">
+          <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" v-model="search.type">
+              <option value="" selected>{{$t('all')}}</option>
+              <option value="buy">{{$t('buy')}}</option>
+              <option value="sell">{{$t('sell')}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="inputPassword" class="col-sm-2 col-form-label nowrap">{{$t('select_date')}}</label>
+        <div class="col-sm-10 d-flex align-items-center">
+            <input type="text" class="form-control datepicker start-date date-picker" :placeholder="$t('start_date')">
+            <span class="to-text">{{$t('to')}}</span>
+            <input type="text" class="form-control datepicker end-date date-picker" :placeholder="$t('end_date')">
+        </div>
+      </div>
+      <div class="form-group">
+        <button @click="searchOrders" type="button" class="search-button btn btn-warning btn-sm text-white">{{$t('search')}}</button>
+      </div>
+    </form>
+    <div class="my-card-header header-text-color">
+        <div @click="control.type = 'open'" class="border-button d-inline-block" :class="{'border-button-active': control.type === 'open'}">{{$t('open_orders')}}</div>
+        <div @click="control.type = 'history'" class="border-button d-inline-block" :class="{'border-button-active': control.type === 'history'}">{{$t('order_history')}}</div>
+    </div>
+    <!-- current orders -->
+    <table v-if="control.type === 'open'" class="table table-hover text-right order-table">
+      <thead>
+          <tr>
+              <th scope="col" class="text-center">{{$t('currency')}}</th>
+              <th scope="col" class="text-center">{{$t('type')}}</th>
+              <th scope="col">{{$t('release_time')}}</th>
+              <th scope="col">{{$t('unit_price')}}</th>
+              <th scope="col">{{$t('unfilled_amount')}}</th>
+              <th scope="col">{{$t('unfilled_money')}}</th>
+              <th scope="col">{{$t('operation')}}</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr v-for="(x, i) in filterCurrent" :key="i">
+              <td class="text-center">{{x.symbol}}/EOS</td>
+              <td class="text-center" :class="{'text-danger': x.type === 'sell', 'text-success': x.type === 'buy'}">{{x.type === 'sell' ? $t('sell'): $t('buy')}}</td>
+              <td>{{formatTime(x.time)}}</td>
+              <td>{{parseFloat(x.price).toFixed(8)}}</td>
+              <td>{{parseFloat(x.amount).toFixed(4)}} {{x.symbol}}</td>
+              <td>{{parseFloat(x.total).toFixed(8)}} EOS</td>
+              <td><button type="button" class="btn btn-outline-warning cancel-btn" v-on:click="exchangeCancel(x.symbol, x.type, x.id)">{{$t('cancel')}}</button></td>
+          </tr>
+          <tr v-if="filterCurrent.length === 0">
+              <td colspan="9" class="text-center">{{$t('noData')}}</td>
+          </tr>
+      </tbody>
+    </table>
+    <!-- history orders -->
+    <table v-if="control.type === 'history'" class="table table-hover text-right order-table">
+        <thead>
+            <tr>
+                <th scope="col" class="text-center">{{$t('currency')}}</th>
+                <th scope="col" class="text-center">{{$t('type')}}</th>
+                <th scope="col">{{$t('transaction_time')}}</th>
+                <th scope="col">{{$t('unit_price')}}</th>
+                <th scope="col">{{$t('transaction_volume')}}</th>
+                <th scope="col">{{$t('transaction_money')}}</th>
+                <th scope="col">{{$t('status')}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(x, i) in historyOrders" :key="i">
+                <td class="text-center">{{x.symbol}}/EOS</td>
+                <td class="text-center" :class="{'text-danger': x.type === 'sell', 'text-success': x.type === 'buy'}">{{x.type === 'sell' ? $t('sell'): $t('buy')}}</td>
+                <td>{{formatTime(x.time)}}</td>
+                <td>{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                <td>{{parseFloat(x.amount).toFixed(4)}} {{x.symbol}}</td>
+                <td>{{parseFloat(x.total).toFixed(8)}} EOS</td>
+                <td>{{$t('deal_done')}}</td>
+            </tr>
+            <tr v-if="historyOrders.length === 0">
+                <td colspan="9" class="text-center">{{$t('noData')}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- pagination -->
+    <nav class="text-center" v-if="control.type === 'history' && pageCount>0">
+        <ul class="pagination">
+            <li><span :class="{'not-allowed': pageIndex <= 1}" @click="prev"> < </span></li>
+            <li v-for="i in pageCount" :key="i">
+                <span :class="{'pagination-active': pageIndex === i}" @click="handlePageChange(i)"> {{i}} </span>
+            </li>
+            <li><span :class="{'not-allowed': pageIndex >= pageCount}" @click="next"> > </span></li>
+            <div class="d-inline-block small page-jump">
+                <span>{{$t('jump_to')}}</span>
+                <input class="form-control jump-input"type="number" v-model="jumpPage"  @keyup.enter="jump">
+                <span>{{$t('page')}}</span>
+            </div>
+        </ul>
+    </nav>
+  </div>
+</div>

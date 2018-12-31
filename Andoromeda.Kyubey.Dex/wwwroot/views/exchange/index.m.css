@@ -1,0 +1,614 @@
+﻿.exchange-summary {
+    margin: 5px 15px;
+    height: 55px;
+}
+
+.exchange-summary-left {
+    width: 50%;
+    float: left;
+}
+
+.exchange-summary-right {
+    width: 50%;
+    float: left;
+}
+
+.exchange-summary-token {
+    font-size: 18px;
+}
+
+.exchange-summary-price {
+    font-size: 18px;
+}
+
+.exchange-summary-rate {
+    font-size: 12px;
+}
+
+    .exchange-summary-price.red, .exchange-summary-rate.red, .exchange-main-current-item-tag-red {
+        color: #c54a4a;
+    }
+
+    .exchange-summary-price.green, .exchange-summary-rate.green, .exchange-main-current-item-tag-green {
+        color: #59c54a;
+    }
+
+.exchange-summary-field {
+    font-size: 12px;
+    color: #aaa;
+    text-align: right;
+}
+
+.exchange-summary-value {
+    color: #555;
+}
+
+.exchange-table-header {
+    table-layout: fixed;
+    background: #eee;
+    color: #888 !important;
+    font-size: 12px;
+    width: 100%;
+}
+
+    .exchange-table-header th {
+        text-align: center;
+        font-weight: normal !important;
+        padding: 5px;
+    }
+
+        .exchange-table-header th:first-child {
+            text-align: left;
+        }
+
+        .exchange-table-header th:last-child {
+            text-align: right;
+        }
+
+    .exchange-table-header.navigator th {
+        text-align: center !important;
+    }
+
+.exchange-buttons {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    height: 70px;
+    border-top: 1px solid #ddd;
+    background: #fff;
+    width: 100%;
+    text-align: center;
+}
+
+.exchange-buttons-item {
+    display: inline-block;
+    width: 46%;
+    text-align: center;
+    background: #eee;
+    border-radius: 5px;
+    height: 45px;
+    line-height: 45px;
+    margin: 10px 0;
+    color: #fff;
+}
+
+    .exchange-buttons-item.red {
+        background: #c54a4a;
+    }
+
+    .exchange-buttons-item.green {
+        background: #59c54a;
+    }
+
+.exchange-table-data-outer, #tv_chart_container {
+    top: 187px;
+    bottom: 130px;
+    left: 0;
+    right: 0;
+    position: static;
+    background: #fff;
+    overflow-y: auto;
+}
+
+#tv_chart_container {
+    height: calc(100vh - 160px - 170px);
+}
+
+.exchange-table-data-left {
+    padding: 5px 0 5px 5px;
+    float: left;
+    width: 50%;
+}
+
+.exchange-table-data-right {
+    padding: 5px 5px 5px 0;
+    float: left;
+    width: 50%;
+}
+
+.exchange-table-data-left .exchange-table-data tr td:last-child {
+    color: #59c54a;
+}
+
+.exchange-table-data-right .exchange-table-data tr td:first-child {
+    color: #c54a4a;
+}
+
+.full-screen.mobile-chart {
+    position: fixed !important;
+    top: 0 !important;
+    z-index: 9999 !important;
+}
+
+.full-screen #tv_chart_container {
+    height: calc(100vh - 40px);
+}
+
+.full-screen-btn-box {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    border: 1px solid #aaa;
+    padding: 1px 4px;
+}
+
+    .full-screen-btn-box i {
+        color: #615f5f;
+        font-size: 24px;
+    }
+
+
+.mobile-chart {
+    padding-top: 40px;
+    background-color: #f8f8f8;
+}
+
+    .mobile-chart .interval {
+        left: unset;
+        right: 0;
+    }
+
+.exchange-table-data {
+    width: 100%;
+    font-size: 12px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+    .exchange-table-data tr td:first-child {
+        text-align: left;
+    }
+
+    .exchange-table-data tr td:last-child {
+        text-align: right;
+    }
+
+    .exchange-table-data tr td {
+        padding: 5px;
+    }
+
+.exchange-header {
+    padding: 5px 15px;
+    height: 60px;
+}
+
+.exchange-header-icon {
+    height: 50px;
+    width: 50px;
+    float: left;
+    margin-right: 5px;
+    border-radius: 50%;
+}
+
+.exchange-header-text-outer {
+    float: left;
+    height: 50px;
+}
+
+.exchange-header-token {
+    font-size: 18px;
+    line-height: 18px;
+    padding: 10px 0 2px 0;
+}
+
+.exchange-header-publisher {
+    color: #888;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 0px 0 13px;
+}
+
+.exchange-header-star, .exchange-header-back {
+    float: right;
+    font-size: 32px;
+    line-height: 50px;
+}
+
+.exchange-header-back {
+    margin-right: 10px;
+}
+
+.exchange-table-header.navigator {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+}
+
+    .exchange-table-header.navigator th {
+        padding: 8px 5px
+    }
+
+    .exchange-table-header.navigator th {
+        cursor: pointer;
+    }
+
+        .exchange-table-header.navigator th.active {
+            color: #2C8CE3;
+        }
+
+.exchange-table-history {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 12px;
+    text-align: right;
+}
+
+    .exchange-table-history thead {
+        background: #eee;
+        font-weight: normal;
+        border-bottom: 1px solid #ddd;
+        color: #555;
+    }
+
+    .exchange-table-history th, .exchange-table-history td {
+        font-size: 12px;
+        padding: 5px;
+        font-weight: normal !important;
+    }
+
+        .exchange-table-history th:first-child, .exchange-table-history td:first-child {
+            text-align: left;
+        }
+
+    .exchange-table-history td {
+        color: #888;
+    }
+
+        .exchange-table-history td.red {
+            color: #c54a4a;
+        }
+
+        .exchange-table-history td.green {
+            color: #59c54a;
+        }
+
+.exchange-description {
+    padding: 8px;
+}
+
+exchange-description-icon-outer {
+    height: 50px;
+}
+
+.exchange-description-icon-outer img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.exchange-description-symbol {
+    font-size: 16px;
+    line-height: 50px;
+}
+
+.exchange-description-content {
+    font-size: 12px;
+    color: #888;
+}
+
+.exchange-description-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 12px;
+    color: #888;
+}
+
+    .exchange-description-table td {
+        padding: 8px;
+    }
+
+.symbol-container {
+    padding-top: 60px;
+}
+
+.exchange-container {
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 60px;
+    position: fixed;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+.exchange-main-amount-decrease, .exchange-main-amount-increase {
+    border: 1px solid #ddd;
+    padding: 10px 0;
+    font-size: 16px;
+    width: 30px;
+    float: left;
+    text-align: center !important;
+    color: #888;
+    height: 46px;
+}
+
+.exchange-main-amount-decrease {
+    border-right: none;
+    color: #59c54a;
+}
+
+.exchange-main-amount-increase {
+    border-left: none;
+    color: #c54a4a;
+}
+
+.exchange-main-amount-textbox {
+    border: 1px solid #ddd;
+    width: calc(100% - 20px - 40px);
+    float: left;
+    height: 46px;
+}
+
+    .exchange-main-amount-textbox input {
+        width: 100%;
+        height: 44px;
+        display: block;
+        border: none;
+        text-align: center;
+        padding: 5px 7px;
+    }
+
+.exchange-type-button {
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    font-size: 16px;
+    width: 50%;
+    float: left;
+    text-align: center;
+    color: #888;
+}
+
+    .exchange-type-button.active {
+        border-color: #2C8CE3;
+        color: #2C8CE3;
+    }
+
+.exchange-main-left {
+    padding: 15px 5px 15px 15px;
+    float: left;
+    width: 50%;
+}
+
+.exchange-main-right {
+    padding: 15px 15px 15px 5px;
+    float: left;
+    width: 50%;
+}
+
+.exchange-main-row {
+    margin-bottom: 15px;
+}
+
+.exchange-main-row-label, .exchange-main-row-hint {
+    font-size: 12px;
+    line-height: 30px;
+    color: #888;
+}
+
+.exchange-main-row-hint {
+    text-align: right;
+}
+
+.exchange-main-amount-token {
+    border: 1px solid #ddd;
+    padding: 10px 0;
+    font-size: 16px;
+    width: 60px;
+    float: left;
+    text-align: center !important;
+    color: #888;
+    height: 46px;
+    border-left: none;
+}
+
+.no-border-right {
+    border-right: none;
+}
+
+.text-align-left {
+    text-align: left !important;
+}
+
+.col-4 {
+    width: 25%;
+}
+
+.sm {
+    font-size: 12px;
+    text-align: center;
+    padding: 0;
+    height: 25px;
+    line-height: 25px;
+}
+
+.exchange-main-button {
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 16px;
+    line-height: 47px;
+    width: 100%;
+    background-color: #ffffff;
+    border-Radius: 0px;
+}
+
+    .exchange-main-button.red {
+        color: #c54a4a;
+        border-color: #c54a4a;
+    }
+        .exchange-main-button.red:hover {
+            background-color: #c54a4a !important;
+            border-color: #c54a4a !important;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(244, 141, 141, 0.5);
+        }
+
+    .exchange-main-button.green {
+        color: #59c54a;
+        border-color: #59c54a;
+    }
+        .exchange-main-button.green:hover {
+            background-color: #59c54a !important;
+            border-color: #59c54a !important;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(141, 244, 168, 0.5)
+        }
+
+.exchange-main-delegate-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    text-align: right;
+    font-size: 12px;
+    color: #888;
+}
+
+    .exchange-main-delegate-table th {
+        font-weight: normal;
+    }
+
+    .exchange-main-delegate-table th, .exchange-main-delegate-table td {
+        padding: 5px;
+    }
+
+.exchange-main-delegate-latest {
+    font-size: 16px;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    margin: 5px 0;
+    line-height: 32px;
+}
+
+.exchange-table-header.gray {
+    background: #eee !important;
+}
+
+.exchange-main-current-item-header {
+    font-size: 14px;
+    color: #555;
+}
+
+.exchange-main-current-item-date {
+    font-size: 10px;
+    color: #aaa;
+}
+
+.exchange-main-current-item-cancel-button, .exchange-main-current-item-finished {
+    float: right;
+    padding: 3px 5px;
+    font-size: 10px;
+    color: #2C8CE3 !important;
+    border: 1px solid #2C8CE3;
+}
+
+.exchange-main-current-item-finished {
+    color: #59c54a !important;
+    border-color: #59c54a;
+}
+
+.exchange-main-current-item {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.exchange-main-delegate-detail-table {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    table-layout: fixed;
+    text-align: right;
+    font-size: 14px;
+    color: #555;
+    margin-top: 15px;
+}
+
+    .exchange-main-delegate-detail-table tr.field {
+        font-size: 12px;
+        color: #aaa;
+    }
+
+.suspension {
+    position: fixed;
+    left: 0;
+    right: 0;
+}
+
+.outline-button-active, .outline-button:hover {
+    border: 1px solid #278eda;
+}
+
+.header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 9999;
+    background-color: #f8f8f8;
+}
+
+.avoid-the-header {
+    margin-top: 100px;
+}
+
+.my-star {
+    display: inline-block;
+    font: normal normal normal 1em FontAwesome;
+}
+
+    .my-star::before {
+        content: "\f006";
+        color: #AFAFAF;
+    }
+
+
+.my-star-active::before {
+    content: "\f005";
+    color: #FFDC00;
+}
+
+.mini-text.red {
+    font-size: 12px;
+    color: #D7523D;
+    Float: right;
+}
+
+.interval span {
+    display: inline-block;
+    padding: 0px 4px;
+    margin-right: 0px;
+    height: 30px;
+    line-height: 30px;
+    color: #9194a4;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    float: right;
+    padding: 3px 15px;
+    font-size: 12px;
+}

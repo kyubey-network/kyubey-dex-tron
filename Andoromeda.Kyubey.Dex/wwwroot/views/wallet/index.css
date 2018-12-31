@@ -1,0 +1,206 @@
+﻿.home-page section {
+    padding: 2rem 4rem;
+}
+
+.home-page .table-container {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    box-shadow: 3px 3px 11px 5px rgba(218,216,216,0.5);
+}
+
+.home-page table {
+    font-size: 12px;
+}
+
+.home-page thead {
+    background: rgba(242,242,242,1);
+}
+
+.table-title-container {
+    padding: 0 4rem;
+    background: #ECECEC;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.home-page td, .home-page th {
+    text-align: center;
+}
+
+.eos-img {
+    width: 16px;
+}
+
+table .fav-th {
+    width: 100px;
+}
+
+table .symbol-th {
+    width: 120px;
+}
+
+.my-input {
+    -webkit-appearance: none;
+    background-color: #fff;
+    background-image: none;
+    border-radius: 10px;
+    border: 1px solid #dcdfe6;
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 40px;
+    line-height: 40px;
+    outline: none;
+    padding: 0 0.7rem;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+}
+
+.banner-box {
+    background: #242424;
+    color: #fff;
+    width: 100%;
+    display: flex;
+    padding: 10px 25px;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+}
+
+.more-text {
+    color: #FFB500;
+    height: 25px;
+    line-height: 25px;
+    cursor: pointer;
+}
+
+.home-news {
+    height: 25px;
+    line-height: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    cursor: pointer;
+}
+
+    .home-news::before {
+        font-family: 'FontAwesome';
+        content: "\f06a";
+        color: #5E9FCD;
+        font-size: 18px;
+        margin-right: 5px;
+    }
+
+.serach-btn {
+    position: relative;
+}
+
+    .serach-btn button {
+        color: #ccc;
+        position: absolute;
+        border-style: none;
+        border-width: 0;
+        right: 4px;
+        background: #fff;
+    }
+
+        .serach-btn button:hover {
+            color: #000;
+        }
+
+.my-star {
+    display: inline-block;
+    font: normal normal normal 2em FontAwesome;
+}
+
+    .my-star::before {
+        content: "\f006";
+        color: #AFAFAF;
+    }
+
+    .my-star:hover::before {
+        content: "\f005";
+        color: #FFDC00;
+    }
+
+.my-star-active::before {
+    content: "\f005";
+    color: #FFDC00;
+}
+
+.my-separator {
+    line-height: 100%;
+    text-align: center;
+}
+
+.my-line {
+    display: inline-block;
+    height: 42%;
+    width: 1px;
+    background: #313131;
+}
+
+.my-tab {
+    height: 100%;
+    box-sizing: border-box;
+    border-bottom: 4px solid #ECECEC;
+    cursor: pointer;
+}
+
+    .my-tab-active, .my-tab:hover {
+        border-bottom: 4px solid #FFB500;
+    }
+
+    .wallet-avatar-outer {
+        text-align: center;
+    }
+
+.wallet-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.wallet-evaluated-outer {
+    text-align: center;
+    font-size: 16px;
+    color: #888;
+    line-height: 30px;
+    margin-top: 10px;
+}
+
+    .wallet-evaluated-outer strong {
+        color: #555 !important;
+    }
+
+.wallet-subline-outer {
+    text-align: center;
+    font-size: 12px;
+    line-height: 25px;
+    color: #aaa;
+}
+
+.wallet-summary {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    box-shadow: 3px 3px 11px 5px rgba(218,216,216,0.5);
+    margin-bottom: 25px;
+    margin: 2rem 4rem;
+    margin-top: 100px;
+    padding: 30px;
+}
+
+.wallet-account-name {
+    margin-left: 15px;
+}
+
+.button {
+    width: 84px;
+    height: 26px;
+    background: rgba(255,255,255,1);
+    border-radius: 4px;
+    border: 1px solid rgba(255,181,0,1);
+}

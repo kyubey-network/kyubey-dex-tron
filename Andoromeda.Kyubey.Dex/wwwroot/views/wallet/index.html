@@ -1,0 +1,68 @@
+﻿<div class="page-container">
+    <div class="wallet-summary mt-60px">
+        <div class="wallet-avatar-outer">
+            <img src="/img/avatar.png" class="wallet-avatar" />
+            <span class="wallet-account-name">{{account.name}}</span>
+        </div>
+        <div class="wallet-evaluated-outer">
+            <strong>{{ parseFloat(totalEvaluated).toFixed(4) }}</strong> EOS
+        </div>
+        <div class="wallet-subline-outer">
+            {{$t('current_total_valuation')}}
+        </div>
+    </div>
+
+    <div class="home-page">
+        <section>
+            <div class="table-container">
+                <div class="table-title-container">
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center my-tab p-2">
+                            {{$t('my_account')}}
+                        </div>
+                    </div>
+                    <div class="m-2">
+                        <div class="d-flex align-items-center serach-btn">
+                            <input type="search" class="my-input" @keyup="searchToken" :placeholder="$t('token')" name="name" v-model="searchText" />
+                            <button type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-hover ">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="fav-th">
+                            </th>
+                            <th class="text-left symbol-th" scope="col">{{$t('token')}}</th>
+                            <th class="text-right" scope="col">{{$t('available_balance')}}</th>
+                            <th class="text-right" scope="col">{{$t('freeze_balance')}}</th>
+                            <th class="text-right" scope="col">{{$t('valuation')}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="cursor: pointer;" v-for="(item, index) in listWithFiter" :key="index"
+                            @click="goToEosExchange(item.symbol)">
+                            <td scope="row">
+                                <i class="my-star" :class="{'my-star-active': favoriteObj[item.symbol]}" @click.stop="toggleFav(item.symbol)" v-if="item.symbol !== 'EOS'"></i>
+                            </td>
+                            <td class="text-left">
+                                <img :src="item.iconSrc" style="width: 30px; border-radius:50%">
+                                <font size="3">{{item.symbol}}</font>
+                            </td>
+                            <td class="text-right"><font size="3" color="#FFB500">{{parseFloat(item.valid).toFixed(4)}}</font></td>
+                            <td class="text-right"><font size="3">{{parseFloat(item.freeze).toFixed(4)}}</font></td>
+                            <td class="text-right"><font size="3">{{parseFloat(item.eos).toFixed(4)}} EOS</font></td>
+                        </tr>
+                        <tr v-if="listWithFiter.length === 0">
+                            <td colspan="5" class="nodata">
+                                {{$t('noData')}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>

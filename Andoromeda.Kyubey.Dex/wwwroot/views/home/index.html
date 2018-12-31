@@ -1,0 +1,108 @@
+﻿<div class="home-page mt-60px">
+    <div class="clearfix banner">
+        <div class="continer page-container">
+            <div class="row">
+                <div class="col-8">
+                    <h1 class="t1">Kyubey Dex</h1>
+                    <h3 class="t2">{{$t('home_banner_tip1')}}</h3>
+                    <p class="t3">{{$t('home_banner_tip2')}}</p>
+                </div>
+                <div class="col-4">
+                    <img style="width: 20rem;float: right;" src="/img/home-page/conputer.png" alt="dex" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="banner-box">
+        <div class="page-container banner-box-inner">
+            <div class="home-news" v-for="x in news" v-on:click="$root.redirect('/home/news')">{{x.title}} {{formatTime(x.time)}}</div>
+            <div class="more-text" v-on:click="$root.redirect('/home/news')">{{$t('more')}}>></div>
+        </div>
+    </div>
+    <section>
+        <div class="table-container page-container">
+            <div class="table-title-container">
+                <div class="d-flex align-items-center">
+                    <div class="d-flex align-items-center mr-5 my-tab p-2" @click="control.tab='eos'" :class="{'my-tab-active': control.tab === 'eos'}">
+                        <img src="/img/home-page/eos.png" alt="eos" class="eos-img mr-2" />
+                        <span>{{$t('eos_trading')}}</span>
+                    </div>
+                </div>
+                <div class="m-2">
+                    <div class="d-flex align-items-center serach-btn">
+                        <input type="search" class="my-input" :placeholder="$t('token')" name="name" v-model="searchText" @keyup.enter="searchToken" @input="searchToken" />
+                        <button type="submit" @click="searchToken">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-hover text-right">
+                <thead>
+                    <tr>
+                        <th class="text-center" scope="col" v-if="isSignedIn" @click="filterFav" style="cursor: pointer;">
+                            <i class="fa fa-star-o" style="color: #AFAFAF;font-size: 16px;" :class="{'my-star-active': control.fav}"></i>
+                            <span>{{$t('optional')}}</span>
+                        </th>
+                        <th class="text-left" scope="col">{{$t('trading_pair')}}</th>
+                        <th scope="col" style="width:20%">{{$t('latest_price')}}</th>
+                        <th scope="col" class="d-flex align-items-center justify-content-end">
+                            <span @click="sortTokenOnClick('change_recent_day')" style="cursor:pointer">{{$t('ups_downs_24H')}}</span>
+                            <div class="d-flex flex-column align-items-center ml-1">
+                                <div class="p-0 m-0 up-icon" style="height: 8px;" :class="{'sort-icon-active': sortControl.desc === 1&&sortControl.row === 'change_recent_day'}" @click="sortToken('change_recent_day', 1)">
+                                    <i class="fa fa-caret-up"></i>
+                                </div>
+                                <div class="p-0 m-0 down-icon" style="height: auto;" :class="{'sort-icon-active': sortControl.desc === 2&&sortControl.row === 'change_recent_day'}" @click="sortToken('change_recent_day', 2)">
+                                    <i class="fa fa-caret-down"></i>
+                                </div>
+                            </div>
+                        </th>
+                        <th scope="col">{{$t('highest_price_24H')}}</th>
+                        <th scope="col">{{$t('lowest_price_24H')}}</th>
+                        <th scope="col" class="d-flex align-items-center justify-content-end">
+                            <span @click="sortTokenOnClick('volume_recent_day')" style="cursor:pointer">{{$t('volume_24H')}}</span>
+                            <div class="d-flex flex-column align-items-center ml-1">
+                                <div class="p-0 m-0 up-icon" style="height: 8px;" :class="{'sort-icon-active': sortControl.desc === 1&&sortControl.row === 'volume_recent_day'}" @click="sortToken('volume_recent_day', 1)">
+                                    <i class="fa fa-caret-up"></i>
+                                </div>
+                                <div class="p-0 m-0 down-icon" style="height: auto;" :class="{'sort-icon-active': sortControl.desc === 2&&sortControl.row === 'volume_recent_day'}" @click="sortToken('volume_recent_day', 2)">
+                                    <i class="fa fa-caret-down"></i>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-center token-row" style="cursor: pointer;" v-for="(item, index) in tokenTable.slice(0,10)" :key="index"
+                        @click="$root.redirect('/exchange/:id', '/exchange/' + item.symbol, { id: item.symbol }, {})">
+                        <td class="text-center" scope="row" v-if="isSignedIn">
+                            <i class="my-star" :class="{'my-star-active': favoriteObj[item.symbol]}" @click.stop="toggleFav(item.symbol)"></i>
+                        </td>
+                        <td class="text-left">
+                            <img :src="item.icon_src" style="width: 30px;">
+                            <span>{{item.symbol}}/EOS</span>
+                        </td>
+                        <td v-bind:class="{ 'text-success': item.up , 'text-danger': item.down  }">
+                            <div class="hover-hidden">{{item.current_price}}</div>
+                            <div class="hover-display">Kyubey DEX: {{item.current_price}}</div>
+                            <div class="hover-display" v-if="item.newdex_price_ask">NewDex: {{parseFloat(item.newdex_price_ask).toFixed(8)}}</div>
+                            <div class="hover-display" v-if="item.whaleex_price">WhaleEx: {{parseFloat(item.whaleex_price).toFixed(8)}}</div>
+                        </td>
+                        <td v-bind:class="{ 'text-success': item.up , 'text-danger': item.down  }">{{item.change_recent_day}}</td>
+                        <td>{{item.max_price_recent_day}}</td>
+                        <td>{{item.min_price_recent_day}}</td>
+                        <td>{{item.volume_recent_day.toFixed(4)}}</td>
+                    </tr>
+                    <tr v-if="tokenTable.length === 0">
+                        <td colspan="7" class="nodata text-center">
+                            {{$t('noData')}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex align-items-center justify-content-center mt-4">
+            <button type="button" @click="$root.redirect('/market')" class="btn btn-light small pl-5 pr-5" style="font-size: 12px;color: #999999;box-shadow: 3px 3px 11px 5px rgba(218,216,216,0.5);">{{$t('see_more')}}</button>
+        </div>
+    </section>
+</div>

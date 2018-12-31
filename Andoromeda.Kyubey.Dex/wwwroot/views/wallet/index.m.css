@@ -1,0 +1,236 @@
+﻿.home-banner {
+    background: #2d2d2d;
+    height: 200px;
+}
+
+.home-banner-title {
+    color: #ffb500;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.home-banner-subtitle {
+    color: #fff;
+    font-size: 16px;
+}
+
+.home-banner-text-outer {
+    padding-left: 20px;
+    padding-top: 55px;
+}
+
+.home-banner-picture {
+    position: absolute;
+    right: 20px;
+    top: 59px;
+}
+
+.home-announcement-outer {
+    padding: 10px 15px;
+    background: #fff;
+    height: 46px;
+    font-size: 14px;
+    line-height: 26px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+    .home-announcement-outer img {
+        margin-right: 15px;
+    }
+
+.token-pair {
+    line-height: 20px;
+}
+
+.token-volume {
+    color: #aaa;
+    line-height: 20px;
+    font-size: 10px;
+}
+
+.token-change {
+    border-radius: 3px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 14px;
+    text-align: center;
+    padding: 8px;
+}
+
+    .token-change.green {
+        background: #59c54a;
+    }
+
+    .token-change.red {
+        background: #c54a4a;
+    }
+
+.token-pair-cell {
+    min-width: 180px;
+}
+
+.token-price-cell {
+    text-align: right;
+}
+
+.token-change-cell {
+    max-width: 90px;
+}
+
+.home-more-tokens {
+    color: #2C8CE3;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.wallet-summary {
+    background-color: #fff;
+    padding-bottom: 14px;
+}
+
+.wallet-token-list {
+    background: #fff;
+    padding: 0px 0;
+    margin-top: 10px;
+}
+
+.wallet-token-filter {
+    color: #aaa;
+    width: 100%;
+    font-size: 12px;
+    text-align: center;
+    table-layout: fixed;
+}
+
+    .wallet-token-filter tr td.active {
+        color: #2C8CE3;
+    }
+
+.wallet-token-table {
+    width: calc(100% - 30px);
+    border-collapse: collapse;
+    margin: 10px 15px;
+}
+
+    .wallet-token-table tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .wallet-token-table td {
+        font-size: 12px;
+        padding: 10px 15px;
+    }
+.wallet-token-table tr:last-child {
+    border: none;
+}
+
+.wallet-avatar-outer {
+    padding-top: 50px;
+    text-align: center;
+}
+
+.wallet-evaluated-outer {
+    text-align: center;
+    font-size: 16px;
+    color: #888;
+    line-height: 30px;
+    margin-top: 0px;
+}
+
+    .wallet-evaluated-outer strong {
+        color: #555 !important;
+    }
+
+.wallet-subline-outer {
+    text-align: center;
+    font-size: 12px;
+    line-height: 25px;
+    color: #aaa;
+}
+
+
+.wallet-account-name {
+    margin-left: 15px;
+}
+
+.wallet-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.serach-btn {
+    position: relative;
+}
+
+    .serach-btn button {
+        color: #949494;
+        position: absolute;
+        border-style: none;
+        border-width: 0;
+        right: 4px;
+        background: rgb(241,241,241);
+        margin-top: 15px;
+        margin-right: 10px;
+    }
+
+        .serach-btn button:hover {
+            color: #000;
+        }
+.my-input {
+    margin-top: 10px;
+    -webkit-appearance: none;
+    background-color: rgb(241,241,241);
+    background-image: none;
+    border-radius: 10px;
+    border: 1px solid rgb(241,241,241);
+    box-sizing: border-box;
+    color: #606266;
+    display: inline-block;
+    font-size: inherit;
+    height: 30px;
+    line-height: 30px;
+    outline: none;
+    padding: 0 0.7rem;
+    transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+}
+
+.search{
+    text-align:right;
+    margin-right:10px;
+}
+
+.nodata{
+    text-align:center;
+}
+
+.wallet-asset-balance {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.wallet-asset-freeze{
+    font-size: 12px;
+    color: gray;
+    margin-top:5px;
+}
+
+.wallet-notEOSsymbol {
+    color: #5EA9FF;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+.wallet-EOSsymbol {
+    color: #000;
+    font-size: 16px;
+    margin-left: 5px;
+}
+.wallet-myasset {
+    text-align: left;
+}
+    .wallet-myasset span {
+        margin-left: 27px;
+    }

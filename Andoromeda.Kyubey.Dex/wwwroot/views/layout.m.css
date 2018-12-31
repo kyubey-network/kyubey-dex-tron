@@ -1,0 +1,128 @@
+﻿body {
+    background: #f8f8f8;
+    font-family: 'Microsoft YaHei'
+}
+
+.clear {
+    clear: both;
+}
+
+.notification {
+    position: fixed;
+    right: 0;
+    top: 50px;
+    width: 100%;
+    background: rgb(57,57,57);
+    border-left: 5px solid #ccc;
+    z-index: 999999;
+    box-shadow: 0 0 25px rgba(0,0,0,0.2);
+    margin-right: -380px;
+    opacity: 0;
+    padding: 10px 15px;
+    transition: margin 0.2s linear, opacity 0.2s linear;
+}
+
+    .notification.active {
+        margin-right: 0;
+        opacity: 1;
+    }
+
+    .notification.succeeded {
+        color: #16b368;
+        border-left: 5px solid #16b368;
+    }
+
+    .notification.warning {
+        color: #f39800;
+        border-left: 5px solid #f39800;
+    }
+
+    .notification.error {
+        color: #fb6666;
+        border-left: 5px solid #fb6666;
+    }
+
+    .notification.important {
+        color: #ed5f82;
+        border-left: 5px solid #ed5f82;
+    }
+
+    .notification.pending {
+        color: #8fd6f8;
+        border-left: 5px solid #8fd6f8;
+    }
+
+.notification-detail {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.tab-outer {
+    height: 64px;
+    background: #fff;
+    border-top: 1px solid #ccc;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+    .tab-outer .tab-item.active {
+        color: #2C8CE3;
+    }
+
+.tab-item {
+    text-align: center;
+    padding: 10px 0;
+    color: #ccc;
+}
+
+    .tab-item img {
+        height: 22px;
+    }
+
+.tab-outer table {
+    width: 100%;
+}
+
+.tab-item-text {
+    font-size: 12px;
+}
+
+.mobile-page {
+    margin-bottom: 64px;
+    background: #f8f8f8;
+}
+
+.mobile-copyright {
+    color: #aaa;
+    font-size: 12px;
+    text-align: center;
+    padding: 15px;
+}
+
+.language-selector.modal.fade .modal-dialog {
+    -webkit-transform: translate(0,25%);
+    -ms-transform: translate(0,25%);
+    -o-transform: translate(0,25%);
+    transform: translate(0,25%);
+}
+
+.language-selector .modal-dialog {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    top: unset;
+    z-index: 9999 !important;
+}
+
+    .language-selector .modal-dialog .modal-content {
+        border: 0;
+        text-align: center;
+    }
+
+.footer-language-selector {
+    width: 140px;
+    margin: 0 auto;
+}

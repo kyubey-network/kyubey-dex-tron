@@ -1,0 +1,47 @@
+.home-banner {
+    background: #2d2d2d;
+    height: 200px;
+}
+
+.home-banner-title {
+    color: #ffb500;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.home-banner-subtitle {
+    color: #fff;
+    font-size: 16px;
+}
+
+.home-banner-text-outer {
+    text-align: center;
+    padding-top: 55px;
+}
+
+.home-banner-picture {
+    position: absolute;
+    right: 20px;
+    top: 59px;
+}
+.more-main {
+    padding: 15px;
+}
+.more-inner {
+    background-color: #fff;
+    border-radius: 10px;
+}
+.link-row {
+    padding: 0 15px;
+    font-size: 14px;
+}
+.link-row-inner {
+    border-bottom: 1px solid #F4F4F4;
+    padding: 15px 0;
+}
+.link-row:hover {
+    background: #F4F4F4;
+}
+.gray {
+    color: #cccccc;
+}

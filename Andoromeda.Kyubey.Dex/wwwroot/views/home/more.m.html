@@ -1,0 +1,39 @@
+<div class="more-page">
+    <div class="home-banner">
+        <div class="home-banner-text-outer">
+            <div class="home-banner-title">Kyubey DEX</div>
+            <div class="home-banner-subtitle">{{$t('home_banner_tip1')}}</div>
+        </div>
+    </div>
+    <div class="more-main">
+        <div class="more-inner">
+            <div class="link-row" @click="$root.showMobileLanguageSelector">
+                <div class="d-flex align-items-center justify-content-between link-row-inner">
+                    <div class="d-flex align-items-center">
+                        <img src="/img/more/language.svg" alt="" class="mr-2">
+                        <span>{{$t('switch_language')}}</span>
+                    </div>
+                    <span class="gray">❯</span>
+                </div>
+            </div>
+            <div class="link-row" @click="$root.redirect('/home/news')">
+                <div class="d-flex align-items-center justify-content-between link-row-inner">
+                    <div class="d-flex align-items-center">
+                        <img src="/img/more/news.svg" alt="" class="mr-2">
+                        <span>{{$t('announcement_center')}}</span>
+                    </div>
+                    <span class="gray">❯</span>
+                </div>
+            </div>
+            <div class="link-row" @click="$root.redirect('/home/contact')">
+                <div class="d-flex align-items-center justify-content-between link-row-inner" style="border-bottom: none;">
+                    <div class="d-flex align-items-center">
+                        <img src="/img/more/contact.svg" alt="" class="mr-2">
+                        <span>{{$t('contact_us')}}</span>
+                    </div>
+                    <span class="gray">❯</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

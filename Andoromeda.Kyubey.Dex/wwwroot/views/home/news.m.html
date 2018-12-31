@@ -1,0 +1,39 @@
+﻿
+<div class="paper">
+    <h1 class="header"><img src="/img/KYUBEY_logo.png" alt="" style="width: 50px;"> Kyubey Dex</h1>
+    <hr />
+    <div class="search bar">
+        <form>
+            <input type="text" v-model="keyWords" :placeholder="$t('search')">
+        </form>
+    </div>
+    <div class="paper content">
+        <h1>
+            {{$t('announcement_center')}}
+        </h1>
+        <template  v-for="x in newsForm">
+            <div @click="x.expand = !x.expand">
+                <h2>
+                    <span v-if="x.expand"><i class="fa fa-chevron-right" aria-hidden="true"></i></span>
+                    <span v-else><i class="fa fa-chevron-down" aria-hidden="true"></i></span>
+                    {{ x.title }}
+                </h2>
+                <div class="content-group" v-if="x.expand">
+                    <p class="Inline-class" v-html="x.summary"></p>
+                </div>
+                <div class="content-group" v-else>
+                    <p class="news-right">{{ x.time }}</p>
+                    <p class="Inline-class" v-html="x.content"></p>
+                </div>
+            </div>
+            <hr />
+        </template>
+        <div v-if="boolNoData">
+            <h2>{{ $t('no_result') }}</h2>
+        </div>
+
+        <div class="btn-outer" v-if="!noMore">
+            <a href="javascript:;" v-on:click="loadMore()" class="btn btn-default">加载更多</a>
+        </div>
+    </div>
+</div>

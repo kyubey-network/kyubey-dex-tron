@@ -1,0 +1,225 @@
+﻿<div>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top" style="padding: 0">
+        <div class="container-fluid">
+            <a class="navbar-brand" @click="$root.redirect('/')">
+                <img style="width: 50px;" src="/img/KYUBEY_logo.png" alt="" />
+            </a>
+            <router-link to="/market" class="my-nav-link">{{$t('market_nav')}}</router-link>
+            <!-- <router-link to="/" class="my-nav-link">{{$t('contract_nav')}}</router-link> -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dex"></a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ">
+                    <li class="nav-item" v-if="!$root.isSignedIn"><a class="nav-link" v-on:click="$root.login()">{{$t('login_nav')}}</a></li>
+                    <li class="nav-item" v-if="$root.isSignedIn"><router-link to="/wallet" class="nav-link">{{$t('welcome_nav')}}{{ $root.account.name }}</router-link></li>
+                    <li class="nav-item" v-if="$root.isSignedIn">
+                        <router-link to="/order" class="nav-link">{{$t('order')}}</router-link>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{$t('lang')}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item" @click="$root.setLang('en')">English</a>
+                            <a class="dropdown-item" @click="$root.setLang('zh')">简体中文</a>
+                            <a class="dropdown-item" @click="$root.setLang('zh_tw')">繁體中文</a>
+                        </div>
+                    </li>
+                    <li class="nav-item" v-if="$root.isSignedIn"><a class="nav-link" v-on:click="$root.switchAccount()">{{$t('switch')}}</a></li>
+                    <li class="nav-item" v-if="$root.isSignedIn"><a class="nav-link" v-on:click="$root.scatterLogout()">{{$t('logout_nav')}}</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <router-view></router-view>
+    <footer class="py-5 bg-black" style="background: #292929;">
+        <!-- <div class="container">
+            <div style="text-align:center">
+                <table style="margin:auto">
+                    <tbody align="center">
+                        <tr>
+                            <td width="100">
+                                <div align="center">
+                                    <div align="center">
+                                        <a data-toggle="tooltip" data-placement="top" title="Please contact us through : Inquiries@kyubey.network"><img src="/img/email_L.png" /></aid>
+                                    </div>
+                                    <div align="center">
+                                        <a data-toggle="tooltip" data-placement="top" title="Please contact us through : Inquiries@kyubey.network"><font color="#737373"> Mail </font></a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td width="100">
+                                <div align="center">
+                                    <div align="center">
+                                        <a href="https://medium.com/@kyubeynetwork/" target="_blank" style="color:red;text-decoration:none;"><img src="/img/medium.png" /></a>
+                                    </div>
+                                    <div align="center">
+                                        <a href="https://medium.com/@kyubeynetwork/" target="_blank" style="color:red;text-decoration:none;"> <font color="#737373"> medium </font></a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td width="100">
+                                <div align="center">
+                                    <div align="center">
+                                        <a href="https://t.me/Kyubey_Network" target="_blank" style="color:red;text-decoration:none;"><img src="/img/telegram.png" /></a>
+                                    </div>
+                                    <div align="center">
+                                        <a href="https://t.me/Kyubey_Network" target="_blank" style="color:red;text-decoration:none;"> <font color="#737373"> TG group</font></a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td width="100">
+                                <div align="center">
+                                    <div align="center">
+                                        <a href="https://t.me/Kyubey_Network_Announcement" target="_blank" style="color:red;text-decoration:none;"><img src="/img/telegram.png" /></a>
+                                    </div>
+                                    <div align="center">
+                                        <a href="https://t.me/Kyubey_Network_Announcement" target="_blank" style="color:red;text-decoration:none;"><font color="#737373"> TG channel </font></a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                </table>
+            </div>
+            <p></p>
+            <p class="m-0 text-center text-white small">Copyright &copy; Kyubey {{ new Date().getFullYear() }}.All rights reserved.</p>
+        </div> -->
+        <div class="container d-flex justify-content-between">
+            <div class="footer-logo d-flex flex-column justify-content-center align-items-center">
+                <img style="width: 100px;" src="/img/KYUBEY_logo.png" alt="">
+                <p class="footer-text-color small">{{$t('footer_warning')}}</p>
+            </div>
+            <div>
+                <div class="pt-2"><a class="footer-text-color small" @click="$root.redirect('/home/contact')">{{$t('contact_us')}}</a></div>
+                <div class="pt-2"><a class="footer-text-color small" @click="$root.redirect('/home/news')">{{$t('announcement_center')}}</a></div>
+                <div class="pt-2"><a class="footer-text-color small" href="/swagger">{{$t('API_Quotes')}}</a></div>
+            </div>
+        </div>
+        <div class="container pt-2">
+            <div class="row">
+                <div class="col-3">
+                </div>
+                <div class="col-6">
+                    <p class="m-0 text-center footer-text-color small">Copyright &copy; Kyubey {{ new Date().getFullYear() }}.All rights reserved.</p>
+                </div>
+                <div class="col-3">
+                    <p class="m-0 text-right footer-text-color small">{{$t('turnover_24H')}}{{parseFloat($root.volume).toFixed(4)}} EOS</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="modalContent"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content" style="background: rgba(0, 0, 0, 0.8)">
+                <div class="modal-body" id="loginModalContent">
+                    <div class="container small" style="color: #B4B4B4;">
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" style="color: #B4B4B4;">&times;</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5 d-flex flex-column align-items-center justify-content-between">
+                                <div class="plugin-login">
+                                    <img src="/img/home-page/scatter_logo.png" alt="scatter_logo">
+                                    <button type="button" class="btn btn-outline-warning mb-3" @click="$root.scatterLogin">{{$t('scatter_sign_in')}}</button>
+                                </div>
+                                <p class="text-center">{{$t('scatter_tip')}}</p>
+                            </div>
+                            <div class="col-2 d-flex flex-column align-items-center justify-content-between">
+                                <span class="my-line"></span>
+                                <span>{{$t('or')}}</span>
+                                <span class="my-line"></span>
+                            </div>
+                            <div class="col-5 d-flex flex-column align-items-center justify-content-between">
+                                <p class="text-center mb-3">{{$t('qrcode_login')}}</p>
+                                <div id="loginQRCode" class="qrcode">
+                                </div>
+                                <div class="qrcode-mask d-flex flex-column align-items-center justify-content-center" v-if="!$root.qrcodeIsValid">
+                                    <p>{{$t('qrcode_expired')}}</p>
+                                    <a @click="$root.refreshLoginQRCode">{{$t('qrcode_refresh')}}</a>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-end login-app-icon-container">
+                                    <img style="width: 1.5rem" src="/img/home-page/pocket_logo.png" alt="pocket_logo" v-bind:title="$t('pocket_tip')">
+                                    <img style="width: 1.5rem" src="/img/home-page/math_logo.png" alt="math_logo" v-bind:title="$t('math_tip')">
+                                    <img style="width: 1.5rem" src="/img/home-page/meetone_logo.png" alt="meetone_logo" v-bind:title="$t('meetone_tip')">
+                                </div>
+                                <p class="text-center">{{$t('qrcode_tip')}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- start notifications -->
+    <div class="notification" v-bind:class="{ 'active': $root.control.currentNotification !== null, 'pending': $root.control.currentNotification && $root.control.currentNotification.level === 'pending', 'succeeded': $root.control.currentNotification && $root.control.currentNotification.level === 'succeeded', 'warning': $root.control.currentNotification && $root.control.currentNotification.level === 'warning', 'error': $root.control.currentNotification && $root.control.currentNotification.level === 'error', 'important': $root.control.currentNotification && $root.control.currentNotification.level === 'important' }">
+        <div class="notification-title">{{ $root.control.currentNotification ? $root.control.currentNotification.title : null }}</div>
+        <div class="notification-detail" v-if="$root.control.currentNotification && $root.control.currentNotification.detail">{{ $root.control.currentNotification ? $root.control.currentNotification.detail : null }}</div>
+        <div class="notification-button-outer" v-if="$root.control.currentNotification && $root.control.currentNotification.button">
+            <a class="notification-button" v-on:click="clickNotification">{{ $root.control.currentNotification.button }}</a>
+        </div>
+    </div>
+    <!-- end notifications -->
+
+
+    <!--exchange modal-->
+    <div class="modal fade" id="exchangeModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="background: rgb(23, 23, 23);">
+                <div class="close-btn text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" style="color: #B4B4B4;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-top text-center">
+                    <div class="modal-body">
+                        <p class="p1 text-center">
+                            {{$root.qrcodeExchange.title}}
+                        </p>
+                        <div id="exchangeQRCodeBox" class="qrcode-img"></div>
+                        <p class="p2 text-center">
+                            {{$t('exchange_account')}}<br />
+                            {{$root.qrcodeExchange.account}}
+                        </p>
+                        <div class="qrcode-mask qrcode-exchange-mask d-flex flex-column align-items-center justify-content-center" v-if="!$root.qrcodeIsValid">
+                            <p>{{$t('qrcode_expired')}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-bottom text-center">
+                    <div class="modal-body text-left">
+                        <p v-for="item in $root.qrcodeExchange.items" v-html="item.text" 
+                           v-bind:class="{'text-success':item.color=='green','text-danger':item.color=='red','font-weight-bold':item.bold==true}">
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

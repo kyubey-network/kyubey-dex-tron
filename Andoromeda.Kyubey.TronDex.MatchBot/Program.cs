@@ -70,6 +70,8 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                         Time = new DateTime(x.Timestamp),
                         TransferHash = transferHash
                     });
+
+                    posItem.Value = x.Block.ToString();
                     await db.SaveChangesAsync();
                     await DoMatchAsync(owner, askSymbol, askAmount, bidSymbol, bidAmount);
                 }

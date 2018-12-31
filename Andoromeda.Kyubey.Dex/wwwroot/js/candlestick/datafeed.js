@@ -11,7 +11,7 @@ FeedBase.prototype.getSendSymbolName = function (symbolName) {
 
 FeedBase.prototype.resolveSymbol = function (symbolName, onResolve, onError) {
     onResolve({
-        "name": symbolName + "/EOS",
+        "name": symbolName + "/TRX",
         "timezone": "Asia/Shanghai",
         "pricescale": 100000000,
         "minmov": 1,

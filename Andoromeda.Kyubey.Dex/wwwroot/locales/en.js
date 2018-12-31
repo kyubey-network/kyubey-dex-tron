@@ -11,7 +11,7 @@ const en = {
     contact_us: 'Contact us',
     announcement_center: 'Announcements',
     API_Quotes: 'API',
-    eos_trading: 'EOS Trading',
+    eos_trading: 'TRX Trading',
     optional: 'Favorites',
     token: 'Token',
     see_more: 'Read more',

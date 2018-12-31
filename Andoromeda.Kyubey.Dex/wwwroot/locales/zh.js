@@ -11,7 +11,7 @@ const zh = {
     contact_us: '联系我们',
     announcement_center: '公告中心',
     API_Quotes: 'API 文档',
-    eos_trading: 'EOS交易',
+    eos_trading: 'TRX交易',
     optional: '自选',
     token: '通证',
     see_more: '查看更多',

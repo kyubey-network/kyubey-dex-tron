@@ -141,6 +141,8 @@ namespace Andoromeda.Kyubey.Models
 
         public DbSet<AlertAccount> AlertAccounts { get; set; }
 
+        public DbSet<TronTrade> TronTrades { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -205,6 +207,15 @@ namespace Andoromeda.Kyubey.Models
             builder.Entity<AlertAccount>(e => {
                 e.HasIndex(x => x.Begin);
                 e.HasIndex(x => x.Expire);
+            });
+
+            builder.Entity<TronTrade>(e => 
+            {
+                e.HasIndex(x => x.AskSymbol);
+                e.HasIndex(x => x.BidSymbol);
+                e.HasIndex(x => x.Time);
+                e.HasIndex(x => x.Status);
+                e.HasIndex(x => x.TransferHash).IsUnique();
             });
         }
     }

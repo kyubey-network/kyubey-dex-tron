@@ -15,6 +15,8 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
         static async Task MainAsync(string[] args)
         {
+            // TODO: 初始化一下EF
+
             Console.WriteLine("Matching bot is starting...");
             while (true)
             {

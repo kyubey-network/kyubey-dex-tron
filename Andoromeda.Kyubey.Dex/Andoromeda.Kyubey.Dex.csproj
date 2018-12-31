@@ -15,7 +15,6 @@
     <PackageReference Include="Andoromeda.Framework.EosNode" Version="1.0.0-*" />
     <PackageReference Include="Andoromeda.Framework.Logger" Version="1.0.0-*" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Andoromeda.Kyubey.Models" Version="1.0.0-*" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
     <PackageReference Include="Pomelo.AspNetCore.TimedJob" Version="2.0.0-rtm-10046" />
     <PackageReference Include="Andoromeda.Framework.GitHub" Version="1.0.0-*" />
@@ -24,6 +23,10 @@
 
   <ItemGroup>
     <Folder Include="Jobs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Andoromeda.Kyubey.Models\Andoromeda.Kyubey.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Andoromeda.Kyubey.Models;
 using Andoromeda.Kyubey.TronDex.CliNet;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using System.Collections.Generic;
 
 namespace Andoromeda.Kyubey.TronDex.MatchBot
 {
@@ -17,7 +20,14 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
         static async Task Main(string[] args)
         {
-            // TODO: 初始化一下EF
+            var builder = new ConfigurationBuilder()
+                            .SetBasePath(Directory.GetCurrentDirectory())
+                            .AddJsonFile("appsettings.json");
+            var configuration = builder.Build();
+
+            var optionsBuilder = new DbContextOptionsBuilder<KyubeyContext>();
+            optionsBuilder.UseMySql(configuration["MySQL"]);
+            var dbContext = new KyubeyContext(optionsBuilder.Options);
 
             Console.WriteLine("Matching bot is starting...");
             await tronCliClient.ImportWalletAsync(cliWalletPwd, "7b81cd82b28dbf9a6efb21de40fb263d83e286644ca04f910f486cb90a7a8357");
@@ -209,8 +219,31 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
         static string GetSymbolContract(string symbol)
         {
-            // TODO: Return symbol's distributing contract address
-            return "";
+            var addressDict = new Dictionary<string, string>
+            {
+                {"DEX","TF6i3aPkvhQ7Whqa8UDs7VXVhtURasnAMk" },
+                {"PCB","TJzcEaqgYk9g4jZLEsB2DksLGikM4dWwYJ" },
+                {"DRS","TKBURAzYP6hwcRWBzqZvqww2PZuBm5Lev7" },
+                {"RET","TLCiRv2qn9tP3x59B3jtxuonyQzUHwNyUq" },
+                {"DICE","THvZvKPLHKLJhEFYKiyqj6j8G8nGgfg7ur" },
+                {"BET","TWGZ7HnAhZkvxiT89vCBSd6Pzwin5vt3ZA" },
+                {"GOC","TYe6uNj7jxkwy28yXeLPs6KDLZCuUjXvgd" },
+                {"AB","TNbYoP22d74RWy4ETssHsXYFrnmmbQ2fvt" },
+                {"BFC","TYUbxiksCwDyAfNcmirnCATZgb6hyrGbir" },
+                {"WIN","TBAo7PNyKo94YWUq1Cs2LBFxkhTphnAE4T" },
+                {"GAME","TYPHiHUiPBPCNvqBpzy1f7bdqrZ5r8e1K7" },
+                {"TWJ","TNq5PbSssK5XfmSYU4Aox4XkgTdpDoEDiY" },
+                {"ANTE","TCN77KWWyUyi2A4Cu7vrh5dnmRyvUuME1E" },
+                {"6KPEN","TCMjU3taxp19xNWMFQdQw45CYwQcqrsYqA" },
+                {"CFT","TSkG9SSKdWV5QBuTPN6udi48rym5iPpLof" },
+                {"VCOIN","TNisVGhbxrJiEHyYUMPxRzgytUtGM7vssZ" },
+                {"REY","TMWkPhsb1dnkAVNy8ej53KrFNGWy9BJrfu" },
+                {"PLAY","TYbSzw3PqBWohc4DdyzFDJMd1hWeNN6FkB" },
+                {"RING","TL175uyihLqQD656aFx3uhHYe1tyGkmXaW" }
+            };
+            if (addressDict.ContainsKey(symbol))
+                return addressDict[symbol];
+            return null;
         }
 
         static async Task<string> GetTransferHashAsync(string address, long amount, string symbol)

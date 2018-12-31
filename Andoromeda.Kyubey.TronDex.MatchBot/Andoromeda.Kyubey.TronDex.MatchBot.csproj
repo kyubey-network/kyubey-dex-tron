@@ -3,11 +3,18 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Andoromeda.Kyubey.Models\Andoromeda.Kyubey.Models.csproj" />
     <ProjectReference Include="..\Andoromeda.Kyubey.TronDex.CliNet\Andoromeda.Kyubey.TronDex.CliNet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

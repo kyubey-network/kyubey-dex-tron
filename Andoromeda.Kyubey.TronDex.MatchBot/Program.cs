@@ -12,10 +12,15 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
         static KyubeyContext db;
         static NodeApiInvoker api = new NodeApiInvoker();
         static string dexAddress = "";
+        static TronCliClient tronCliClient = new TronCliClient(@"C:\wallet-cli\", @"build\libs\wallet-cli.jar");
+        static string cliWalletPwd = "Passw0rd";
 
         static async Task MainAsync(string[] args)
         {
             Console.WriteLine("Matching bot is starting...");
+            await tronCliClient.ImportWalletAsync(cliWalletPwd, "7b81cd82b28dbf9a6efb21de40fb263d83e286644ca04f910f486cb90a7a8357");
+            await tronCliClient.LoginAsync(cliWalletPwd);
+
             while (true)
             {
                 var posItem = await db.Constants.SingleOrDefaultAsync(x => x.Id == "exchange_pos");
@@ -162,18 +167,17 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
         static async Task TransferAsync(string address, long amount, string symbol)
         {
-            // TODO: transfer TRX, TRC10, TRC20 to address
             if (symbol == "TRX")
             {
-
+                await tronCliClient.SendCoinAsync(address, amount);
             }
             else if (IsTrc10(symbol))
             {
-
+                await tronCliClient.TransferTRC10Async(address, symbol, amount);
             }
             else if (IsTrc20(symbol))
             {
-
+                await tronCliClient.TransferTRC20Async(address, symbol, amount);
             }
             else
             {
@@ -193,7 +197,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             {
                 var result = await api.GetTransfersAsync(address, symbol);
                 var matched = result.Data.Where(x => x.Amount == amount && x.TransferToAddress == dexAddress);
-                foreach(var x in matched)
+                foreach (var x in matched)
                 {
                     if (!await db.TronTrades.AnyAsync(y => y.TransferHash == x.TransactionHash))
                     {
@@ -211,7 +215,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                         .Any(y => y.Calls.FirstOrDefault()?.Name == "transfer"
                             && y.Calls.FirstOrDefault()?.Parameters.First(z => z.Name == "to").Value == dexAddress
                             && Convert.ToInt64(y.Calls.FirstOrDefault()?.Parameters.First(z => z.Name == "value").Value) == amount));
-                foreach(var x in matched)
+                foreach (var x in matched)
                 {
                     if (!await db.TronTrades.AnyAsync(y => y.TransferHash == x.Hash))
                     {

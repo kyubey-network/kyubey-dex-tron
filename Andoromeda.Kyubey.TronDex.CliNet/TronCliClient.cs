@@ -108,7 +108,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             });
         }
 
-        public Task<bool> SendCoinAsync(string address, int amount)
+        public Task<bool> SendCoinAsync(string address, long amount)
         {
             return InvokeAsync($"SendCoin {address} {amount}", "SendCoin", (str) =>
             {
@@ -137,7 +137,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             });
         }
 
-        public Task<bool> TransferTRC10Async(string address, string symbol, int amount)
+        public Task<bool> TransferTRC10Async(string address, string symbol, long amount)
         {
             return InvokeAsync($"TransferAsset {address} {symbol} {amount}", "TransferAsset", (str) =>
             {
@@ -195,7 +195,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             });
         }
 
-        public Task<bool> TransferTRC20Async(string toAddress, string contractAddress, int amount)
+        public Task<bool> TransferTRC20Async(string toAddress, string contractAddress, long amount)
         {
             return InvokeAsync($"triggercontract {contractAddress} transfer(address,uint256) \"{toAddress}\",{amount} false 1000000 0 0 #", "TransferTRC20", (str) =>
             {

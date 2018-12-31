@@ -87,7 +87,8 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                     {
                         process.StandardInput.WriteLine(maxNo);
                     }
-                    else {
+                    else
+                    {
                         process.StandardInput.WriteLine(keyNo);
                     }
                     return null;
@@ -136,7 +137,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             });
         }
 
-        public Task<bool> TransferAssetAsync(string address, string symbol, int amount)
+        public Task<bool> TransferTRC10Async(string address, string symbol, int amount)
         {
             return InvokeAsync($"TransferAsset {address} {symbol} {amount}", "TransferAsset", (str) =>
             {
@@ -184,6 +185,31 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                     return null;
                 }
                 else if (str.Contains("Import a wallet successful"))
+                {
+                    return true;
+                }
+                else
+                {
+                    return null;
+                }
+            });
+        }
+
+
+        public Task<bool> TransferTRC20Async(string toAddress, string contractAddress, int amount)
+        {
+            return InvokeAsync($"triggercontract {contractAddress} transfer(address,uint256) \"{toAddress}\",{amount} false 1000000 0 0 #", "TransferTRC20", (str) =>
+            {
+                if (str.Contains("failed"))
+                {
+                    return false;
+                }
+                else if (str.Contains("Please input your password."))
+                {
+                    process.StandardInput.WriteLine(this.password);
+                    return null;
+                }
+                else if (str.Contains("triggerContract successfully"))
                 {
                     return true;
                 }

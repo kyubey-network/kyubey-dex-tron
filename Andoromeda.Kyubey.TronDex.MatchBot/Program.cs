@@ -163,6 +163,28 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
         static async Task TransferAsync(string address, long amount, string symbol)
         {
             // TODO: transfer TRX, TRC10, TRC20 to address
+            if (symbol == "TRX")
+            {
+
+            }
+            else if (IsTrc10(symbol))
+            {
+
+            }
+            else if (IsTrc20(symbol))
+            {
+
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        static string GetSymbolContract(string symbol)
+        {
+            // TODO: Return symbol's distributing contract address
+            return "";
         }
 
         static async Task<string> GetTransferHashAsync(string address, long amount, string symbol)

@@ -35,6 +35,15 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             }
         }
 
+        public async Task<TransactionListResponse> GetTransactionListAsync(string hash = default, int? block = default, CancellationToken cancellationToken = default)
+        {
+            using (var response = await _client.GetAsync($"/api/transaction?hash={hash}&block={block}", cancellationToken))
+            {
+                var responseText = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TransactionListResponse>(responseText);
+            }
+        }
+
         public async Task<BalanceResponse> GetBalanceAsync(string accountAddress, string accountName = default, CancellationToken cancellationToken = default)
         {
             using (var response = await _client.GetAsync($"/api/account?address={accountAddress}&name={accountName}", cancellationToken))
@@ -44,5 +53,13 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             }
         }
 
+        public async Task<TransferResponse> GetTransfersAsync(string address = default, string hash = default, string fromAddress = default, string toAddress = default, string token = default, string dateStart = default, string dateEnd = default, int? blockNumber = default, CancellationToken cancellationToken = default)
+        {
+            using (var response = await _client.GetAsync($"/api/transfer?hash={hash}&address={address}&from={fromAddress}&to={toAddress}&token={token}&date_start={dateStart}&date_to={dateEnd}&number={blockNumber}", cancellationToken))
+            {
+                var responseText = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TransferResponse>(responseText);
+            }
+        }
     }
 }

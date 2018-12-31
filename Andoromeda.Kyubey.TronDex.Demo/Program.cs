@@ -11,7 +11,9 @@ namespace Andoromeda.Kyubey.TronDex.Demo
             var nodeAPI = new NodeApiInvoker();
             //var ct = nodeAPI.GetContractTransactionsAsync("TK6EDrMUfiRcso1uR7rNBVDjHRayKPQMoA").Result;
             //var t = nodeAPI.GetTransactionAsync("56d8123b79a05ff093bc5b55a86b13e11a0a907a31c2abcaea02561def53f50b").Result;
-            var b = nodeAPI.GetBalanceAsync("TBVbLiQirADEdMsTL4WeTgNmMAgeoS16cF").Result;
+            var t2 = nodeAPI.GetTransactionListAsync().Result;
+
+            //var b = nodeAPI.GetBalanceAsync("TBVbLiQirADEdMsTL4WeTgNmMAgeoS16cF").Result;
 
             Console.ReadKey();
 

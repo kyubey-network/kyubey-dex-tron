@@ -13,7 +13,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
         static NodeApiInvoker api = new NodeApiInvoker();
         static string dexAddress = ""; // cli绑的哪个账号就填哪个地址
 
-        static async Task MainAsync(string[] args)
+        static async Task Main(string[] args)
         {
             // TODO: 初始化一下EF
 

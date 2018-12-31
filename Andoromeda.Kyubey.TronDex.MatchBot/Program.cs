@@ -106,6 +106,15 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                     await TransferAsync(x.Account, Convert.ToInt64(amount / x.UnitPrice), bidSymbol);
                     await TransferAsync(account, Convert.ToInt64(amount), askSymbol);
 
+                    db.MatchReceipts.Add(new MatchReceipt
+                    {
+                        IsSellMatch = true,
+                        Asker = account,
+                        Ask = amount,
+                        Bidder = x.Account,
+                        Bid = Convert.ToInt64(amount / x.UnitPrice)
+                    });
+
                     if (x.Ask == 0 || x.Bid == 0)
                     {
                         db.Remove(x);
@@ -144,6 +153,15 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
                     await TransferAsync(x.Account, Convert.ToInt64(amount * x.UnitPrice), bidSymbol);
                     await TransferAsync(account, Convert.ToInt64(amount), askSymbol);
+
+                    db.MatchReceipts.Add(new MatchReceipt
+                    {
+                        IsSellMatch = false,
+                        Asker = x.Account,
+                        Ask = amount,
+                        Bidder = account,
+                        Bid = Convert.ToInt64(amount * x.UnitPrice)
+                    });
 
                     if (x.Ask == 0 || x.Bid == 0)
                     {

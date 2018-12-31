@@ -290,7 +290,7 @@
         },
         login: function () {
             $('#loginModal').modal('show');
-            this.refreshLoginQRCode();
+            //this.refreshLoginQRCode();
         },
         refreshLoginQRCode: function () {
             var _this = this;
@@ -303,23 +303,14 @@
         },
         scatterLogin: function () {
             const $t = this.$t.bind(this);
-            if (!('scatter' in window)) {
-                showModal($t('scatter_not_found'), $t('scatter_tip'));
+            if (typeof tronPay !== 'undefined') {
+                tronWeb = tronPay.tronWeb || tronWeb
+                if (tronWeb.isTronPay && tronWeb.ready) {
+                    debugger;
+                    // Now start you app & access tronWeb
+                }
             } else {
-                var self = this;
-                var network = {
-                    blockchain: 'eos',
-                    host: self.host,
-                    port: 443,
-                    protocol: 'https',
-                    chainId: self.chainId
-                };
-                scatter.getIdentity({ accounts: [network] }).then(identity => {
-                    self.account = identity.accounts.find(acc => acc.blockchain === 'eos');
-                    self.loginMode = 'Scatter Addons';
-                    self.eos = scatter.eos(network, Eos, {});
-                    self.requiredFields = { accounts: [network] };
-                });
+                console.log('No tronWeb? You should install TronPay!')
             }
             $('#loginModal').modal('hide');
         },

@@ -167,7 +167,7 @@ const zh = {
     tip_exchange_adjuct_zero2: '为了保证您的交易不受损失,当前价格({price})的最小卖出量是{min_count},请调整您的价格或者加大卖出量,谢谢。',
     orders: '当前订单',
     history: '历史成交',
-    scatter_sign_in: 'Scatter登录',
+    scatter_sign_in: 'TronLink登录',
     turnover_24H: '24H成交额：',
     current_language: '简体中文',
     mobile_footer_home: '首页',

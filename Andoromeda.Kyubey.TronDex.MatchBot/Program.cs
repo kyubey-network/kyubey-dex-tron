@@ -11,7 +11,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
     {
         static KyubeyContext db;
         static NodeApiInvoker api = new NodeApiInvoker();
-        static string dexAddress = "";
+        static string dexAddress = ""; // cli绑的哪个账号就填哪个地址
 
         static async Task MainAsync(string[] args)
         {

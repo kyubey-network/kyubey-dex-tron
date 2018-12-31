@@ -11,12 +11,14 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
     {
         static KyubeyContext db;
         static NodeApiInvoker api = new NodeApiInvoker();
-        static string dexAddress = "";
+        static string dexAddress = ""; // cli绑的哪个账号就填哪个地址
         static TronCliClient tronCliClient = new TronCliClient(@"C:\wallet-cli\", @"build\libs\wallet-cli.jar");
         static string cliWalletPwd = "Passw0rd";
 
-        static async Task MainAsync(string[] args)
+        static async Task Main(string[] args)
         {
+            // TODO: 初始化一下EF
+
             Console.WriteLine("Matching bot is starting...");
             await tronCliClient.ImportWalletAsync(cliWalletPwd, "7b81cd82b28dbf9a6efb21de40fb263d83e286644ca04f910f486cb90a7a8357");
             await tronCliClient.LoginAsync(cliWalletPwd);
@@ -75,6 +77,8 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                         Time = new DateTime(x.Timestamp),
                         TransferHash = transferHash
                     });
+
+                    posItem.Value = x.Block.ToString();
                     await db.SaveChangesAsync();
                     await DoMatchAsync(owner, askSymbol, askAmount, bidSymbol, bidAmount);
                 }
@@ -110,6 +114,15 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
                     await TransferAsync(x.Account, Convert.ToInt64(amount / x.UnitPrice), bidSymbol);
                     await TransferAsync(account, Convert.ToInt64(amount), askSymbol);
+
+                    db.MatchReceipts.Add(new MatchReceipt
+                    {
+                        IsSellMatch = true,
+                        Asker = account,
+                        Ask = amount,
+                        Bidder = x.Account,
+                        Bid = Convert.ToInt64(amount / x.UnitPrice)
+                    });
 
                     if (x.Ask == 0 || x.Bid == 0)
                     {
@@ -149,6 +162,15 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
                     await TransferAsync(x.Account, Convert.ToInt64(amount * x.UnitPrice), bidSymbol);
                     await TransferAsync(account, Convert.ToInt64(amount), askSymbol);
+
+                    db.MatchReceipts.Add(new MatchReceipt
+                    {
+                        IsSellMatch = false,
+                        Asker = x.Account,
+                        Ask = amount,
+                        Bidder = account,
+                        Bid = Convert.ToInt64(amount * x.UnitPrice)
+                    });
 
                     if (x.Ask == 0 || x.Bid == 0)
                     {

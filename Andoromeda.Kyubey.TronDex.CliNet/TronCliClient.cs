@@ -195,7 +195,6 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             });
         }
 
-
         public Task<bool> TransferTRC20Async(string toAddress, string contractAddress, int amount)
         {
             return InvokeAsync($"triggercontract {contractAddress} transfer(address,uint256) \"{toAddress}\",{amount} false 1000000 0 0 #", "TransferTRC20", (str) =>

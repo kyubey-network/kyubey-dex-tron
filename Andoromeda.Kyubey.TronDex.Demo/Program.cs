@@ -8,11 +8,12 @@ namespace Andoromeda.Kyubey.TronDex.Demo
     {
         static void Main(string[] args)
         {
-            //var nodeAPI = new NodeApiInvoker();
-            ////var ct = nodeAPI.GetContractTransactionsAsync("TK6EDrMUfiRcso1uR7rNBVDjHRayKPQMoA").Result;
+            var nodeAPI = new NodeApiInvoker();
+            //var ct = nodeAPI.GetContractTransactionsAsync("TK6EDrMUfiRcso1uR7rNBVDjHRayKPQMoA").Result;
             //var t = nodeAPI.GetTransactionAsync("56d8123b79a05ff093bc5b55a86b13e11a0a907a31c2abcaea02561def53f50b").Result;
+            var b = nodeAPI.GetBalanceAsync("TBVbLiQirADEdMsTL4WeTgNmMAgeoS16cF").Result;
 
-            //Console.ReadKey();
+            Console.ReadKey();
 
             var address = "TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8";
             var privateKey = "7b81cd82b28dbf9a6efb21de40fb263d83e286644ca04f910f486cb90a7a8357";

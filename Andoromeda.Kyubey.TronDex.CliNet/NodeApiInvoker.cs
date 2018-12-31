@@ -34,5 +34,15 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                 return JsonConvert.DeserializeObject<TransationResponse>(responseText);
             }
         }
+
+        public async Task<BalanceResponse> GetBalanceAsync(string accountAddress, string accountName = default, CancellationToken cancellationToken = default)
+        {
+            using (var response = await _client.GetAsync($"/api/account?address={accountAddress}&name={accountName}", cancellationToken))
+            {
+                var responseText = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<BalanceResponse>(responseText);
+            }
+        }
+
     }
 }

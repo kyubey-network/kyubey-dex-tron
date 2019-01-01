@@ -16,6 +16,26 @@ namespace Andoromeda.Kyubey.Dex.Controllers
     [Route("api/v1/lang/{lang}/[controller]")]
     public class UserController : BaseController
     {
+        [HttpPost("{account}/favorite/{symbol}")]
+        public async Task<IActionResult> PostFavorite([FromServices] KyubeyContext db, string account, string symbol, CancellationToken cancellationToken)
+        {
+            var userFavs = await db.Favorites.Where(x => x.Account == account && x.TokenId == symbol).ToListAsync(cancellationToken);
+            if (userFavs.Count > 0)
+            {
+                db.Favorites.RemoveRange(userFavs);
+            }
+            else
+            {
+                db.Favorites.Add(new Favorite()
+                {
+                    Account = account,
+                    TokenId = symbol
+                });
+            }
+            await db.SaveChangesAsync();
+            return Ok();
+        }
+
         [HttpGet("{account}/favorite")]
         [ProducesResponseType(typeof(ApiResult<IEnumerable<GetFavoriteResponse>>), 200)]
         [ProducesResponseType(typeof(ApiResult), 404)]

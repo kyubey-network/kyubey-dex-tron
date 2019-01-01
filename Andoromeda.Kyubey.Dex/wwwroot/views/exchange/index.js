@@ -68,8 +68,8 @@
             buy: 0,
             sell: 0
         },
-        eosBalance: 999,
-        tokenBalance: 999,
+        eosBalance: 0,
+        tokenBalance: 0,
         appAccount: app.account,
         //views
         openOrdersView: null,

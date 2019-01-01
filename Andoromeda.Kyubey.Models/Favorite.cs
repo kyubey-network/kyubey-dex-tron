@@ -5,7 +5,7 @@ namespace Andoromeda.Kyubey.Models
 {
     public class Favorite
     {
-        [MaxLength(16)]
+        [MaxLength(50)]
         public string Account { get; set; }
 
         [MaxLength(16)]

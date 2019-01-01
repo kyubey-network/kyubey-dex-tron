@@ -395,11 +395,9 @@
         },
         // token, is add favorite, callback
         toggleFav(token, isAdd, cb) {
-            if (this.loginMode === 'Simple Wallet') {
-                this.startQRCodeFav(token, isAdd);
-            } else if (this.loginMode === 'Scatter Addons' || this.loginMode === 'Scatter Desktop') {
-                this.scatterFav(token, isAdd, cb);
-            }
+            $.post(`api/v1/lang/${app.lang}/user/${this.account.name}/favorite/${token}`, function (d) {
+                cb();
+            });
         },
         scatterFav(token, isAdd, cb) {
             const { account, requiredFields, eos } = app;

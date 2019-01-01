@@ -68,8 +68,8 @@
             buy: 0,
             sell: 0
         },
-        eosBalance: 0,
-        tokenBalance: 0,
+        eosBalance: 999,
+        tokenBalance: 999,
         appAccount: app.account,
         //views
         openOrdersView: null,
@@ -112,7 +112,7 @@ component.methods = {
         this.getTokenInfo();
     },
     initUserViews() {
-        this.getBalances();
+        ///this.getBalances();
         this.getOpenOrders();
         this.getHistroyOrders();
     },
@@ -158,23 +158,23 @@ component.methods = {
         }
         return x;
     },
-    getExchangeAvailableValues(price, amount) {
-        var tmp_p = parseFloat((price * 100000000).toFixed(0));
+    //getExchangeAvailableValues(price, amount) {
+    //    var tmp_p = parseFloat((price * 100000000).toFixed(0));
 
-        var lcm = this.lcmTwoNumbers(tmp_p, 100000000);
-        var min_available_count = lcm / tmp_p / 10000;
-        var min_available_total = lcm / 100000000 / 10000;
+    //    var lcm = this.lcmTwoNumbers(tmp_p, 100000000);
+    //    var min_available_count = lcm / tmp_p / 10000;
+    //    var min_available_total = lcm / 100000000 / 10000;
 
-        var availableAmount = parseInt((amount / min_available_count).toFixed(0)) * min_available_count;
+    //    var availableAmount = parseInt((amount / min_available_count).toFixed(0)) * min_available_count;
 
-        return {
-            price: price,
-            min_count: min_available_count,
-            min_total: min_available_total,
-            availableAmount: parseFloat((availableAmount).toFixed(4)),
-            availableTotal: parseFloat((price * availableAmount).toFixed(4))
-        };
-    },
+    //    return {
+    //        price: price,
+    //        min_count: min_available_count,
+    //        min_total: min_available_total,
+    //        availableAmount: parseFloat((availableAmount).toFixed(app.precision.amount)),
+    //        availableTotal: parseFloat((price * availableAmount).toFixed(app.precision.total))
+    //    };
+    //},
     dateObjToString: function (date) {
         return `${date.getFullYear()}/${(date.getMonth() + 1)}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} `;
     },
@@ -269,9 +269,9 @@ component.methods = {
         const $t = this.$t.bind(this);
 
         var buySymbol = this.tokenId;
-        var buyPrice = parseFloat(parseFloat(this.inputs.buyPrice).toFixed(8));
-        var buyAmount = parseFloat(parseFloat(this.inputs.buyAmount).toFixed(4));
-        var buyTotal = parseFloat(parseFloat(this.inputs.buyTotal).toFixed(4));
+        var buyPrice = parseFloat(parseFloat(this.inputs.buyPrice).toFixed(app.precision.price));
+        var buyAmount = parseFloat(parseFloat(this.inputs.buyAmount).toFixed(app.precision.amount));
+        var buyTotal = parseFloat(parseFloat(this.inputs.buyTotal).toFixed(app.precision.total));
 
         //limit exchange input validate
         if (this.control.trade === 'limit') {
@@ -284,9 +284,9 @@ component.methods = {
                 return;
             }
 
-            var availableObj = this.getExchangeAvailableValues(buyPrice, buyAmount);
-            buyAmount = availableObj.availableAmount;
-            buyTotal = parseFloat(parseFloat(parseInt((buyTotal / availableObj.min_total).toFixed(0)) * availableObj.min_total).toFixed(4));
+            //var availableObj = this.getExchangeAvailableValues(buyPrice, buyAmount);
+            //buyAmount = availableObj.availableAmount;
+            //buyTotal = parseFloat(parseFloat(parseInt((buyTotal / availableObj.min_total).toFixed(0)) * availableObj.min_total).toFixed(app.precision.total));
 
             if (buyAmount == 0 || buyTotal == 0) {
                 showModal($t('delegate_failed'), $t('tip_exchange_adjuct_zero', { price: buyPrice + "EOS", min_count: availableObj.min_count + buySymbol }), "error");
@@ -318,7 +318,7 @@ component.methods = {
         const $t = this.$t.bind(this);
 
         if (this.control.trade === 'limit') {
-            var reqObj = this._getExchangeRequestObj(app.account.name, "kyubeydex.bp", buyTotal, "eosio.token", "EOS", 4, app.uuid, `${buyAmount.toFixed(4)} ${buySymbol}`);
+            var reqObj = this._getExchangeRequestObj(app.account.name, "kyubeydex.bp", buyTotal, "eosio.token", "TRX", 4, app.uuid, `${buyAmount.toFixed(app.precision.amount)} ${buySymbol}`);
             app.startQRCodeExchange($t('exchange_tip'), JSON.stringify(reqObj),
                 [
                     {
@@ -326,13 +326,13 @@ component.methods = {
                         text: `${$t('exchange_buy')} ${buySymbol}`
                     },
                     {
-                        text: `${$t('exchange_price')}: ${parseFloat(buyPrice).toFixed(8)} EOS`
+                        text: `${$t('exchange_price')}: ${parseFloat(buyPrice).toFixed(app.precision.price)} TRX`
                     },
                     {
-                        text: `${$t('exchange_amount')}: ${parseFloat(buyAmount).toFixed(4)} ${buySymbol}`
+                        text: `${$t('exchange_amount')}: ${parseFloat(buyAmount).toFixed(app.precision.amount)} ${buySymbol}`
                     },
                     {
-                        text: `${$t('exchange_total')}: ${parseFloat(buyTotal).toFixed(4)} EOS`
+                        text: `${$t('exchange_total')}: ${parseFloat(buyTotal).toFixed(app.precision.total)} TRX`
                     }
                 ]);
         }
@@ -345,35 +345,37 @@ component.methods = {
                         text: `${$t('exchange_buy')} ${buySymbol}`
                     },
                     {
-                        text: `${$t('exchange_total')}: ${parseFloat(buyTotal).toFixed(4)} EOS`
+                        text: `${$t('exchange_total')}: ${parseFloat(buyTotal).toFixed(app.precision.total)} TRX`
                     }
                 ]);
         }
     },
-    scatterBuy(buySymbol, buyPrice, buyAmount, buyTotal) {
+    async scatterBuy(buySymbol, buyPrice, buyAmount, buyTotal) {
         var self = this;
         const { account, requiredFields, eos } = app;
         const $t = this.$t.bind(this);
 
+
         if (this.control.trade === 'limit') {
-            eos.contract('eosio.token', { requiredFields })
-                .then(contract => {
-                    return contract.transfer(
-                        account.name,
-                        'kyubeydex.bp',
-                        buyTotal.toFixed(4) + ' EOS',
-                        buyAmount.toFixed(4) + ' ' + this.tokenId,
-                        {
-                            authorization: [`${account.name}@${account.authority}`]
-                        });
-                })
-                .then(() => {
-                    self.delayRefresh(self.refreshUserViews);
-                    showModal($t('delegate_succeed'), $t('You can confirm the result in your wallet') + ',' + $t('Please contact us if you have any questions'));
-                })
-                .catch(error => {
-                    self.handleScatterException(error, $t('delegate_failed'));
-                });
+            var address = "TMWkPhsb1dnkAVNy8ej53KrFNGWy9BJrfu";
+            //await tronWeb.trx.sendTrx("TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8", 100);
+            await tronWeb.trx.sendToken("TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8", 1,"REVOLUTION");
+
+            //var contract = await tronWeb.contract().at(address);
+            //contract.transfer("TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8", 100).send();
+
+            //qv.get(`/api/v1/lang/${app.lang}/node/contract`, {
+            //    address: address
+            //}).then(contractObj => {
+
+            //    var abiObj = [{ "constant": true, "name": "name", "outputs": [{ "type": "string" }], "type": 2, "stateMutability": 2 }, { "name": "approve", "inputs": [{ "name": "spender", "type": "address" }, { "name": "value", "type": "uint256" }], "outputs": [{ "type": "bool" }], "type": 2, "stateMutability": 3 }, { "constant": true, "name": "totalSupply", "outputs": [{ "type": "uint256" }], "type": 2, "stateMutability": 2 }, { "name": "transferFrom", "inputs": [{ "name": "from", "type": "address" }, { "name": "to", "type": "address" }, { "name": "value", "type": "uint256" }], "outputs": [{ "type": "bool" }], "type": 2, "stateMutability": 3 }, { "constant": true, "name": "decimals", "outputs": [{ "type": "uint8" }], "type": 2, "stateMutability": 2 }, { "name": "increaseAllowance", "inputs": [{ "name": "spender", "type": "address" }, { "name": "addedValue", "type": "uint256" }], "outputs": [{ "type": "bool" }], "type": 2, "stateMutability": 3 }, { "constant": true, "name": "balanceOf", "inputs": [{ "name": "owner", "type": "address" }], "outputs": [{ "type": "uint256" }], "type": 2, "stateMutability": 2 }, { "constant": true, "name": "symbol", "outputs": [{ "type": "string" }], "type": 2, "stateMutability": 2 }, { "name": "decreaseAllowance", "inputs": [{ "name": "spender", "type": "address" }, { "name": "subtractedValue", "type": "uint256" }], "outputs": [{ "type": "bool" }], "type": 2, "stateMutability": 3 }, { "name": "transfer", "inputs": [{ "name": "to", "type": "address" }, { "name": "value", "type": "uint256" }], "outputs": [{ "type": "bool" }], "type": 2, "stateMutability": 3 }, { "constant": true, "name": "allowance", "inputs": [{ "name": "owner", "type": "address" }, { "name": "spender", "type": "address" }], "outputs": [{ "type": "uint256" }], "type": 2, "stateMutability": 2 }, { "type": 1, "stateMutability": 3 }, { "name": "Transfer", "inputs": [{ "indexed": true, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }, { "name": "value", "type": "uint256" }], "type": 3 }, { "name": "Approval", "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "spender", "type": "address" }, { "name": "value", "type": "uint256" }], "type": 3 }];
+            //    debugger;
+            //    console.log(abiObj);
+            //    const contract = tronWeb.contract(abiObj, "4137f3d3225bedabcc7e4a1");
+            //    console.log(contract);
+            //});
+
+
         }
         else if (this.control.trade === 'market') {
             eos.contract('eosio.token', { requiredFields })
@@ -381,7 +383,7 @@ component.methods = {
                     return contract.transfer(
                         account.name,
                         'kyubeydex.bp',
-                        parseFloat(buyTotal).toFixed(4) + ' EOS',
+                        parseFloat(buyTotal).toFixed(app.precision.total) + ' TRX',
                         `0.0000 ${this.tokenId}`,
                         {
                             authorization: [`${account.name}@${account.authority}`]
@@ -411,9 +413,9 @@ component.methods = {
         const $t = this.$t.bind(this);
 
         var sellSymbol = this.tokenId;
-        var sellPrice = parseFloat(parseFloat(this.inputs.sellPrice).toFixed(8));
-        var sellAmount = parseFloat(parseFloat(this.inputs.sellAmount).toFixed(4));
-        var sellTotal = parseFloat(parseFloat(this.inputs.sellTotal).toFixed(4));
+        var sellPrice = parseFloat(parseFloat(this.inputs.sellPrice).toFixed(app.precision.price));
+        var sellAmount = parseFloat(parseFloat(this.inputs.sellAmount).toFixed(app.precision.amount));
+        var sellTotal = parseFloat(parseFloat(this.inputs.sellTotal).toFixed(app.precision.total));
 
         //limit exchange input validate
         if (this.control.trade === 'limit') {
@@ -426,9 +428,9 @@ component.methods = {
                 return;
             }
 
-            var availableObj = this.getExchangeAvailableValues(sellPrice, sellAmount);
-            sellAmount = availableObj.availableAmount;
-            sellTotal = parseFloat(parseFloat(parseInt((sellTotal / availableObj.min_total).toFixed(0)) * availableObj.min_total).toFixed(4));
+            //var availableObj = this.getExchangeAvailableValues(sellPrice, sellAmount);
+            //sellAmount = availableObj.availableAmount;
+            //sellTotal = parseFloat(parseFloat(parseInt((sellTotal / availableObj.min_total).toFixed(0)) * availableObj.min_total).toFixed(app.precision.total));
 
             if (sellAmount == 0 || sellTotal == 0) {
                 showModal($t('delegate_failed'), $t('tip_exchange_adjuct_zero2', { price: sellPrice, min_count: availableObj.min_count + sellSymbol }), "error");
@@ -459,7 +461,7 @@ component.methods = {
         const $t = this.$t.bind(this);
 
         if (this.control.trade === 'limit') {
-            var reqObj = this._getExchangeRequestObj(app.account.name, "kyubeydex.bp", sellAmount, this.baseInfo.contract.transfer, sellSymbol, 4, app.uuid, `${sellTotal.toFixed(4)} EOS`);
+            var reqObj = this._getExchangeRequestObj(app.account.name, "kyubeydex.bp", sellAmount, this.baseInfo.contract.transfer, sellSymbol, 4, app.uuid, `${sellTotal.toFixed(app.precision.total)} EOS`);
             app.startQRCodeExchange($t('exchange_tip'), JSON.stringify(reqObj),
                 [
                     {
@@ -467,13 +469,13 @@ component.methods = {
                         text: `${$t('exchange_sell')} ${sellSymbol}`
                     },
                     {
-                        text: `${$t('exchange_sellprice')}: ${parseFloat(sellPrice).toFixed(8)} EOS`
+                        text: `${$t('exchange_sellprice')}: ${parseFloat(sellPrice).toFixed(app.precision.price)} EOS`
                     },
                     {
-                        text: `${$t('exchange_sellamount')}: ${parseFloat(sellAmount).toFixed(4)} ${sellSymbol}`
+                        text: `${$t('exchange_sellamount')}: ${parseFloat(sellAmount).toFixed(app.precision.amount)} ${sellSymbol}`
                     },
                     {
-                        text: `${$t('exchange_total')}: ${parseFloat(sellTotal).toFixed(4)} EOS`
+                        text: `${$t('exchange_total')}: ${parseFloat(sellTotal).toFixed(app.precision.total)} EOS`
                     }
                 ]);
         }
@@ -487,7 +489,7 @@ component.methods = {
                         text: `${$t('exchange_sell')} ${sellSymbol}`
                     },
                     {
-                        text: `${$t('exchange_total')}: ${parseFloat(sellTotal).toFixed(4)} ${this.tokenId}`
+                        text: `${$t('exchange_total')}: ${parseFloat(sellTotal).toFixed(app.precision.total)} ${this.tokenId}`
                     }
                 ]);
         }
@@ -503,8 +505,8 @@ component.methods = {
                     return contract.transfer(
                         account.name,
                         'kyubeydex.bp',
-                        sellAmount.toFixed(4) + ' ' + sellSymbol,
-                        sellTotal.toFixed(4) + ' EOS',
+                        sellAmount.toFixed(app.precision.amount) + ' ' + sellSymbol,
+                        sellTotal.toFixed(app.precision.total) + ' EOS',
                         {
                             authorization: [`${account.name}@${account.authority}`]
                         });
@@ -524,7 +526,7 @@ component.methods = {
                     return contract.transfer(
                         account.name,
                         'kyubeydex.bp',
-                        sellTotal.toFixed(4) + ' ' + sellSymbol,
+                        sellTotal.toFixed(app.precision.total) + ' ' + sellSymbol,
                         `0.0000 EOS`,
                         {
                             authorization: [`${account.name}@${account.authority}`]
@@ -585,14 +587,14 @@ component.methods = {
                 this.maxAmountSellOrder = maxAmountSellOrder;
                 //first bind
                 if (this.inputs.buyPrice == null) {
-                    this.inputs.buyPrice = minDelegateSellPrice.toFixed(8);
+                    this.inputs.buyPrice = minDelegateSellPrice.toFixed(app.precision.price);
                     if (this.isSignedIn) {
-                        this.inputs.buyAmount = minDelegateSellPriceAmount.toFixed(4);
-                        this.inputs.buyTotal = (minDelegateSellPrice * minDelegateSellPriceAmount).toFixed(4);
+                        this.inputs.buyAmount = minDelegateSellPriceAmount.toFixed(app.precision.amount);
+                        this.inputs.buyTotal = (minDelegateSellPrice * minDelegateSellPriceAmount).toFixed(app.precision.total);
                     }
                     else {
-                        this.inputs.buyAmount = 0.0.toFixed(4);
-                        this.inputs.buyTotal = 0.0.toFixed(4);
+                        this.inputs.buyAmount = 0.0.toFixed(app.precision.amount);
+                        this.inputs.buyTotal = 0.0.toFixed(app.precision.total);
                     }
                 }
             }
@@ -619,14 +621,14 @@ component.methods = {
                 this.maxAmountBuyOrder = maxAmountBuyOrder;
                 //first bind
                 if (this.inputs.sellPrice == null) {
-                    this.inputs.sellPrice = maxDelegateBuyPrice.toFixed(8);
+                    this.inputs.sellPrice = maxDelegateBuyPrice.toFixed(app.precision.price);
                     if (this.isSignedIn) {
-                        this.inputs.sellAmount = maxDelegateBuyPriceAmount.toFixed(4);
-                        this.inputs.sellTotal = (maxDelegateBuyPrice * maxDelegateBuyPriceAmount).toFixed(4);
+                        this.inputs.sellAmount = maxDelegateBuyPriceAmount.toFixed(app.precision.amount);
+                        this.inputs.sellTotal = (maxDelegateBuyPrice * maxDelegateBuyPriceAmount).toFixed(app.precision.total);
                     }
                     else {
-                        this.inputs.sellAmount = 0.0.toFixed(4);
-                        this.inputs.sellTotal = 0.0.toFixed(4);
+                        this.inputs.sellAmount = 0.0.toFixed(app.precision.amount);
+                        this.inputs.sellTotal = 0.0.toFixed(app.precision.total);
                     }
                 }
             }
@@ -641,24 +643,24 @@ component.methods = {
         });
     },
     setPublish(price, amount, total) {
-        price = parseFloat(price).toFixed(8);
-        amount = parseFloat(amount).toFixed(4);
-        total = parseFloat(total).toFixed(4);
+        price = parseFloat(price).toFixed(app.precision.price);
+        amount = parseFloat(amount).toFixed(app.precision.amount);
+        total = parseFloat(total).toFixed(app.precision.total);
         this.inputs.buyPrice = price;
         this.inputs.sellPrice = price;
         if (this.isSignedIn) {
             // calculate buyTotal & buyAmount
             if (total > parseFloat(this.eosBalance)) {
-                this.inputs.buyTotal = parseFloat(this.eosBalance).toFixed(4);
-                this.inputs.buyAmount = parseFloat(this.inputs.buyTotal / this.inputs.buyPrice).toFixed(4);
+                this.inputs.buyTotal = parseFloat(this.eosBalance).toFixed(app.precision.total);
+                this.inputs.buyAmount = parseFloat(this.inputs.buyTotal / this.inputs.buyPrice).toFixed(app.precision.amount);
             } else {
                 this.inputs.buyTotal = total;
                 this.inputs.buyAmount = amount;
             }
             // calculate sellTotal & sellAmount
             if (amount > parseFloat(this.tokenBalance)) {
-                this.inputs.sellAmount = parseFloat(this.tokenBalance).toFixed(4);
-                this.inputs.sellTotal = parseFloat(this.inputs.sellAmount * this.inputs.sellPrice).toFixed(4);
+                this.inputs.sellAmount = parseFloat(this.tokenBalance).toFixed(app.precision.amount);
+                this.inputs.sellTotal = parseFloat(this.inputs.sellAmount * this.inputs.sellPrice).toFixed(app.precision.total);
             } else {
                 this.inputs.sellAmount = amount;
                 this.inputs.sellTotal = total;
@@ -732,40 +734,40 @@ component.methods = {
     checkPercentState() {
         if (this.buyPrecent) {
             //changed
-            if (parseFloat(this.inputs.buyTotal) != parseFloat((this.buyPrecent * this.eosBalance).toFixed(4))) {
+            if (parseFloat(this.inputs.buyTotal) != parseFloat((this.buyPrecent * this.eosBalance).toFixed(app.precision.total))) {
                 this.buyPrecent = 0;
             }
         }
         if (this.sellPrecent) {
             //changed
-            if (parseFloat(this.inputs.sellTotal) != parseFloat((this.sellPrecent * this.tokenBalance).toFixed(4))) {
+            if (parseFloat(this.inputs.sellTotal) != parseFloat((this.sellPrecent * this.tokenBalance).toFixed(app.precision.total))) {
                 this.sellPrecent = 0;
             }
         }
     },
     handlePriceChange(type) {
         if (type === 'buy') {
-            this.inputs.buyTotal = parseFloat(this.inputs.buyAmount * this.inputs.buyPrice).toFixed(4)
+            this.inputs.buyTotal = parseFloat(this.inputs.buyAmount * this.inputs.buyPrice).toFixed(app.precision.total)
         } else {
-            this.inputs.sellTotal = parseFloat(this.inputs.sellAmount * this.inputs.sellPrice).toFixed(4)
+            this.inputs.sellTotal = parseFloat(this.inputs.sellAmount * this.inputs.sellPrice).toFixed(app.precision.total)
         }
         this.checkPercentState();
     },
     handleAmountChange(type) {
         if (type === 'buy') {
-            this.inputs.buyTotal = parseFloat(this.inputs.buyAmount * this.inputs.buyPrice).toFixed(4)
+            this.inputs.buyTotal = parseFloat(this.inputs.buyAmount * this.inputs.buyPrice).toFixed(app.precision.total)
         } else {
-            this.inputs.sellTotal = parseFloat(this.inputs.sellAmount * this.inputs.sellPrice).toFixed(4)
+            this.inputs.sellTotal = parseFloat(this.inputs.sellAmount * this.inputs.sellPrice).toFixed(app.precision.total)
         }
         this.checkPercentState();
     },
     handleTotalChange(type) {
         if (type === 'buy') {
             let isZero = (!this.inputs.buyPrice || parseFloat(this.inputs.buyPrice) == 0);
-            this.inputs.buyAmount = isZero ? '0.0000' : parseFloat(this.inputs.buyTotal / this.inputs.buyPrice).toFixed(4);
+            this.inputs.buyAmount = isZero ? '0.0000' : parseFloat(this.inputs.buyTotal / this.inputs.buyPrice).toFixed(app.precision.amount);
         } else {
             let isZero = (!this.inputs.sellPrice || parseFloat(this.inputs.sellPrice) == 0);
-            this.inputs.sellAmount = isZero ? '0.0000' : parseFloat(this.inputs.sellTotal / this.inputs.buyPrice).toFixed(4);
+            this.inputs.sellAmount = isZero ? '0.0000' : parseFloat(this.inputs.sellTotal / this.inputs.buyPrice).toFixed(app.precision.amount);
         }
         this.checkPercentState();
     },
@@ -783,22 +785,22 @@ component.methods = {
             if (n === 'buyPrecent') {
                 let isZero = (!this.inputs.buyPrice || parseFloat(this.inputs.buyPrice) == 0);
 
-                this.inputs.buyTotal = parseFloat(this.eosBalance * x).toFixed(4);
-                this.inputs.buyAmount = isZero ? '0.0000' : parseFloat(this.inputs.buyTotal / this.inputs.buyPrice).toFixed(4);
+                this.inputs.buyTotal = parseFloat(this.eosBalance * x).toFixed(app.precision.total);
+                this.inputs.buyAmount = isZero ? '0.0000' : parseFloat(this.inputs.buyTotal / this.inputs.buyPrice).toFixed(app.precision.amount);
             } else {
-                this.inputs.sellAmount = parseFloat(this.tokenBalance * x).toFixed(4);
-                this.inputs.sellTotal = parseFloat(this.inputs.sellAmount * this.inputs.sellPrice).toFixed(4);
+                this.inputs.sellAmount = parseFloat(this.tokenBalance * x).toFixed(app.precision.amount);
+                this.inputs.sellTotal = parseFloat(this.inputs.sellAmount * this.inputs.sellPrice).toFixed(app.precision.total);
             }
         }
     },
     pricePrecision(n) {
-        return parseFloat(n).toFixed(8);
+        return parseFloat(n).toFixed(app.precision.price);
     },
     amountPrecision(n) {
-        return parseFloat(n).toFixed(4);
+        return parseFloat(n).toFixed(app.precision.amount);
     },
     totalPrecision(n) {
-        return parseFloat(n).toFixed(4);
+        return parseFloat(n).toFixed(app.precision.total);
     },
     getOpenOrders() {
         var self = this;

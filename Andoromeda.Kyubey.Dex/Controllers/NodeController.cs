@@ -104,5 +104,16 @@ namespace Andoromeda.Kyubey.Dex.Controllers
             var nodeResult = await nodeApiInvoker.GetAbiJsonToBinAsync(request.Code, request.Action, args);
             return ApiResult(nodeResult.Binargs);
         }
+
+        [HttpGet("contract")]
+        [ProducesResponseType(typeof(ApiResult<TronDex.CliNet.ContractResponse>), 200)]
+        [ProducesResponseType(typeof(ApiResult), 404)]
+        public async Task<IActionResult> GetContractAsync(string address, CancellationToken cancellationToken)
+        {
+            var client = new Andoromeda.Kyubey.TronDex.CliNet.NodeApiInvoker();
+            var response = await client.GetContractAsync(address);
+            return Json(response);
+        }
+
     }
 }

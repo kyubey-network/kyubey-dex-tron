@@ -26,7 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\views\tronPay-demo-master\index.js" />
+    <None Include="wwwroot\views\tronPay-demo-master\README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Andoromeda.Kyubey.Models\Andoromeda.Kyubey.Models.csproj" />
+    <ProjectReference Include="..\Andoromeda.Kyubey.TronDex.CliNet\Andoromeda.Kyubey.TronDex.CliNet.csproj" />
   </ItemGroup>
 
   <ItemGroup>

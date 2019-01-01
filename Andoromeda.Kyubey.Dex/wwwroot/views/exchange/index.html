@@ -17,7 +17,7 @@
                     </div>
                     <div class="infoitem">
                         <p class="infoitem-title">{{$t('latest_price')}}</p>
-                        <p class="text-success" v-bind:class="{'text-danger': !(latestTransactions[0]?latestTransactions[0].growing:true) }"><span>{{parseFloat(baseInfo.currentPrice).toFixed(8)}}</span> TRX</p>
+                        <p class="text-success" v-bind:class="{'text-danger': !(latestTransactions[0]?latestTransactions[0].growing:true) }"><span>{{parseFloat(baseInfo.currentPrice).toFixed($root.precision.price)}}</span> TRX</p>
                     </div>
                     <div class="infoitem">
                         <p class="infoitem-title">{{$t('ups_downs_24H')}}</p>
@@ -27,15 +27,15 @@
                     </div>
                     <div class="infoitem">
                         <p class="infoitem-title">{{$t('highest_price_24H')}}</p>
-                        <p><span>{{parseFloat(baseInfo.maxPriceRecentDay).toFixed(8)}}</span> TRX</p>
+                        <p><span>{{parseFloat(baseInfo.maxPriceRecentDay).toFixed($root.precision.price)}}</span> TRX</p>
                     </div>
                     <div class="infoitem">
                         <p class="infoitem-title">{{$t('lowest_price_24H')}}</p>
-                        <p><span>{{parseFloat(baseInfo.minPriceRecentDay).toFixed(8)}}</span> TRX</p>
+                        <p><span>{{parseFloat(baseInfo.minPriceRecentDay).toFixed($root.precision.price)}}</span> TRX</p>
                     </div>
                     <div class="infoitem">
                         <p class="infoitem-title">{{$t('volume_24H')}}</p>
-                        <p><span>{{parseFloat(baseInfo.volumeRecentDay).toFixed(4)}}</span> {{tokenId}}</p>
+                        <p><span>{{parseFloat(baseInfo.volumeRecentDay).toFixed($root.precision.total)}}</span> {{tokenId}}</p>
                     </div>
                 </div>
             </div>
@@ -80,22 +80,22 @@
                         </thead>
                         <tbody v-if="control.order !== 'buy'">
                             <tr v-for="(x, i) in sellOrders" :key="i" v-on:click="setPublish(x.unitPrice, x.amount, x.total)" :style="'background: linear-gradient(to left, RGBA(232,18,52,.2) ' + getcolorOccupationRatio(x.amount,maxAmountSellOrder) + ', #292929 ' + getcolorOccupationRatio(x.amount,maxAmountSellOrder) + ')'">
-                                <td style="color: #E23030;">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
-                                <td>{{parseFloat(x.amount).toFixed(4)}}</td>
-                                <td>{{parseFloat(x.total).toFixed(4)}}</td>
+                                <td style="color: #E23030;">{{parseFloat(x.unitPrice).toFixed($root.precision.price)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed($root.precision.amount)}}</td>
+                                <td>{{parseFloat(x.total).toFixed($root.precision.total)}}</td>
                             </tr>
                         </tbody>
                         <tbody>
                             <tr class="delegate-tip">
                                 <td colspan="3" class="e-orders-split text-center">
-                                    <span class="text-success" v-if="latestTransactions[0]?latestTransactions[0].growing:true">{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed(8)}} ↑</span>
-                                    <span class="text-danger" v-else>{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed(8)}} ↓</span>
+                                    <span class="text-success" v-if="latestTransactions[0]?latestTransactions[0].growing:true">{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed($root.precision.price)}} ↑</span>
+                                    <span class="text-danger" v-else>{{parseFloat(latestTransactions[0]?latestTransactions[0].unitPrice:0).toFixed($root.precision.price)}} ↓</span>
                                 </td>
                             </tr>
                             <tr v-for="(x, i) in buyOrders" :key="i" v-if="control.order !== 'sell'" v-on:click="setPublish(x.unitPrice, x.amount, x.total)" :style="'background: linear-gradient(to left, RGBA(82,177,109,.2) ' + getcolorOccupationRatio(x.amount,maxAmountBuyOrder) + ', #292929 ' + getcolorOccupationRatio(x.amount,maxAmountBuyOrder) + ')'">
-                                <td style="color: #00B54F;">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
-                                <td>{{parseFloat(x.amount).toFixed(4)}}</td>
-                                <td>{{parseFloat(x.total).toFixed(4)}}</td>
+                                <td style="color: #00B54F;">{{parseFloat(x.unitPrice).toFixed($root.precision.price)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed($root.precision.amount)}}</td>
+                                <td>{{parseFloat(x.total).toFixed($root.precision.total)}}</td>
                                 <i style="width: 100%;height: 100%;background: red;"></i>
                             </tr>
                         </tbody>
@@ -127,7 +127,7 @@
                 <div class="card my-card e-submit-card">
                     <div class="my-card-header header-text-color">
                         <div @click="control.trade = 'limit'" class="border-button d-inline-block" :class="{'border-button-active': control.trade === 'limit'}">{{$t('limit_order')}}</div>
-                        <div @click="control.trade = 'market'" class="border-button d-inline-block" :class="{'border-button-active': control.trade === 'market'}">{{$t('market_order')}}</div>
+                        <!--<div @click="control.trade = 'market'" class="border-button d-inline-block" :class="{'border-button-active': control.trade === 'market'}">{{$t('market_order')}}</div>-->
                     </div>
                     <div class="container-fluid">
                         <div class="row">
@@ -138,12 +138,12 @@
                                             {{$t('buy')}} {{tokenId}}
                                         </b>
                                     </span>
-                                    <span style="color: #626262;">{{$t('balance')}}: {{parseFloat(eosBalance).toFixed(4)}} TRX</span>
+                                    <span style="color: #626262;">{{$t('balance')}}: {{parseFloat(eosBalance).toFixed($root.precision.total)}} TRX</span>
                                 </div>
                                 <div style="font-size: 0;" class="mb-2">
                                     <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_price')}}</label>
                                     <div class="e-input">
-                                        <input v-if="control.trade === 'limit'" @blur="handleBlur('buyPrice')" @input="handlePriceChange('buy')" v-model="inputs.buyPrice" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <input v-if="control.trade === 'limit'" @blur="handleBlur('buyPrice')" @input="handlePriceChange('buy')" v-model="inputs.buyPrice" type="number" autocomplete="off" step="0.000001" min="0.000001" class="e-input-inner">
                                         <input v-else class="e-input-inner" :placeholder="$t('best_buy_price')" disabled="true">
                                         <span class="e-input-suffix">TRX</span>
                                     </div>
@@ -151,7 +151,7 @@
                                 <div style="font-size: 0;" class="mb-2" v-if="control.trade === 'limit'">
                                     <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_amount')}}</label>
                                     <div class="e-input">
-                                        <input @blur="handleBlur('buyAmount', 4)" @input="handleAmountChange('buy')" v-model="inputs.buyAmount" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <input @blur="handleBlur('buyAmount', 0)" @input="handleAmountChange('buy')" v-model="inputs.buyAmount" type="number" autocomplete="off" step="1" min="0" class="e-input-inner">
                                         <span class="e-input-suffix">{{tokenId}}</span>
                                     </div>
                                 </div>
@@ -163,7 +163,7 @@
                                 <div style="font-size: 0;" class="mb-2">
                                     <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_total')}}</label>
                                     <div class="e-input">
-                                        <input @blur="handleBlur('buyTotal', 4)" @input="handleTotalChange('buy')" v-model="inputs.buyTotal" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <input @blur="handleBlur('buyTotal', 6)" @input="handleTotalChange('buy')" v-model="inputs.buyTotal" type="number" autocomplete="off" step="0.000001" min="0.000001" class="e-input-inner">
                                         <span class="e-input-suffix">TRX</span>
                                     </div>
                                 </div>
@@ -182,12 +182,12 @@
                             <div class="col-sm-6 mt-3 pl-4 pr-4">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-red" style="font-size: 16px"><b>{{$t('sell')}} {{tokenId}}</b></span>
-                                    <span style="color: #626262;">{{$t('balance')}}: {{parseFloat(tokenBalance).toFixed(4)}} {{tokenId}}</span>
+                                    <span style="color: #626262;">{{$t('balance')}}: {{parseFloat(tokenBalance).toFixed($root.precision.total)}} {{tokenId}}</span>
                                 </div>
                                 <div style="font-size: 0;" class="mb-2">
                                     <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_sellprice')}}</label>
                                     <div class="e-input">
-                                        <input v-if="control.trade === 'limit'" @blur="handleBlur('sellPrice')" @input="handlePriceChange('sell')" v-model="inputs.sellPrice" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <input v-if="control.trade === 'limit'" @blur="handleBlur('sellPrice')" @input="handlePriceChange('sell')" v-model="inputs.sellPrice" type="number" autocomplete="off" step="0.000001" min="0.000001" class="e-input-inner">
                                         <input v-else class="e-input-inner" :placeholder="$t('best_sell_price')" disabled="true">
                                         <span class="e-input-suffix">TRX</span>
                                     </div>
@@ -195,7 +195,7 @@
                                 <div style="font-size: 0;" class="mb-2" v-if="control.trade === 'limit'">
                                     <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_sellamount')}}</label>
                                     <div class="e-input">
-                                        <input @blur="handleBlur('sellAmount', 4)" @input="handleAmountChange('sell')" v-model="inputs.sellAmount" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <input @blur="handleBlur('sellAmount', 0)" @input="handleAmountChange('sell')" v-model="inputs.sellAmount" type="number" autocomplete="off" step="1" min="0" class="e-input-inner">
                                         <span class="e-input-suffix">{{tokenId}}</span>
                                     </div>
                                 </div>
@@ -207,7 +207,7 @@
                                 <div style="font-size: 0;" class="mb-2">
                                     <label style="width: 70px;color: #AFAFAF;font-size: 14px;">{{$t('exchange_total')}}</label>
                                     <div class="e-input">
-                                        <input @blur="handleBlur('sellTotal', 4)" @input="handleTotalChange('sell')" v-model="inputs.sellTotal" type="number" autocomplete="off" step="0.0001" min="0.0001" class="e-input-inner">
+                                        <input @blur="handleBlur('sellTotal', 6)" @input="handleTotalChange('sell')" v-model="inputs.sellTotal" type="number" autocomplete="off" step="0.000001" min="0.000001" class="e-input-inner">
                                         <span class="e-input-suffix" v-if="control.trade==='limit'">TRX</span>
                                         <span class="e-input-suffix" v-if="control.trade==='market'">{{tokenId}}</span>
                                     </div>
@@ -255,7 +255,7 @@
                                     <i class="my-star" style="color: #AFAFAF;font-size: 14px;" :class="{'my-star-active': x.favorite}" @click.stop="toggleFav(x.symbol, i)"></i>
                                 </td>
                                 <td class="text-left">{{x.symbol}}/TRX</td>
-                                <td v-bind:class="{'text-success':x.change>0,'text-danger':x.change<0}">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
+                                <td v-bind:class="{'text-success':x.change>0,'text-danger':x.change<0}">{{parseFloat(x.unitPrice).toFixed($root.precision.price)}}</td>
                                 <td v-bind:class="{'text-success':x.change>0,'text-danger':x.change<0}">
                                     <span v-if="x.change>0">+</span>{{parseFloat(x.change*100).toFixed(2)}}%
                                 </td>
@@ -280,8 +280,8 @@
                         </thead>
                         <tbody style="height:260px;">
                             <tr v-for="(x, i) in latestTransactions" :key="i">
-                                <td v-bind:class="{'text-success':x.growing,'text-danger':!x.growing}">{{parseFloat(x.unitPrice).toFixed(8)}}</td>
-                                <td>{{parseFloat(x.amount).toFixed(4)}}</td>
+                                <td v-bind:class="{'text-success':x.growing,'text-danger':!x.growing}">{{parseFloat(x.unitPrice).toFixed($root.precision.price)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed($root.precision.amount)}}</td>
                                 <td>{{formatShortTime(x.time)}}</td>
                             </tr>
                         </tbody>
@@ -310,9 +310,9 @@
                                 <td class="text-center">{{x.symbol}}/TRX</td>
                                 <td class="text-center" :class="{'text-danger': x.type === 'sell', 'text-success': x.type === 'buy'}">{{x.type === 'sell' ? $t('sell'): $t('buy')}}</td>
                                 <td>{{formatTime(x.time)}}</td>
-                                <td>{{parseFloat(x.price).toFixed(8)}}</td>
-                                <td>{{parseFloat(x.amount).toFixed(4)}} {{x.symbol}}</td>
-                                <td>{{parseFloat(x.total).toFixed(4)}} TRX</td>
+                                <td>{{parseFloat(x.price).toFixed($root.precision.price)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed($root.precision.amount)}} {{x.symbol}}</td>
+                                <td>{{parseFloat(x.total).toFixed($root.precision.total)}} TRX</td>
                                 <td class="text-center text-warning" v-on:click="exchangeCancel(x.symbol, x.type, x.id)">{{$t('cancel')}}</td>
                             </tr>
                             <tr v-if="openOrders.length === 0">
@@ -344,9 +344,9 @@
                                 <td class="text-center">{{x.symbol}}/TRX</td>
                                 <td class="text-center" :class="{'text-danger': x.type === 'sell', 'text-success': x.type === 'buy'}">{{x.type === 'sell' ? $t('sell'): $t('buy')}}</td>
                                 <td>{{formatTime(x.time)}}</td>
-                                <td>{{parseFloat(x.unitPrice).toFixed(8)}}</td>
-                                <td>{{parseFloat(x.amount).toFixed(4)}} {{x.symbol}}</td>
-                                <td>{{parseFloat(x.total).toFixed(8)}} TRX</td>
+                                <td>{{parseFloat(x.unitPrice).toFixed($root.precision.price)}}</td>
+                                <td>{{parseFloat(x.amount).toFixed($root.precision.amount)}} {{x.symbol}}</td>
+                                <td>{{parseFloat(x.total).toFixed($root.precision.total)}} TRX</td>
                                 <td class="text-center">{{$t('deal_done')}}</td>
                             </tr>
                             <tr v-if="orderHistory.length === 0">

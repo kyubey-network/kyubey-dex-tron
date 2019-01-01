@@ -61,5 +61,14 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                 return JsonConvert.DeserializeObject<TransferResponse>(responseText);
             }
         }
+
+        public async Task<ContractResponse> GetContractAsync(string address, CancellationToken cancellationToken = default)
+        {
+            using (var response = await _client.GetAsync($"/api/contracts/code?contract={address}", cancellationToken))
+            {
+                var responseText = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ContractResponse>(responseText);
+            }
+        }
     }
 }

@@ -17,6 +17,11 @@
                 listeners: []
             }
         },
+        precision: {
+            price: 6,
+            amount: 0,
+            total: 6
+        },
         qrcodeIsValid: true,
         qrcodeTimer: null,
         qrcodeExchange: {
@@ -302,12 +307,17 @@
             }, 3 * 60 * 1000);
         },
         scatterLogin: function () {
+            var self = this;
             const $t = this.$t.bind(this);
             if (typeof tronPay !== 'undefined') {
                 tronWeb = tronPay.tronWeb || tronWeb
                 if (tronWeb.isTronPay && tronWeb.ready) {
-                    debugger;
-                    // Now start you app & access tronWeb
+                    if (tronWeb.defaultAddress.base58) {
+                        self.loginMode = 'Scatter Addons';
+                        self.account = {
+                            name: tronWeb.defaultAddress.base58
+                        };
+                    }
                 }
             } else {
                 console.log('No tronWeb? You should install TronPay!')

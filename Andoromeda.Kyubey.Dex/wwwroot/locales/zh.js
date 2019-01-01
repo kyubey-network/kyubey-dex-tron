@@ -85,7 +85,7 @@ const zh = {
     my_account: '我的账户',
     available_balance: '可用余额',
     freeze_balance: '冻结',
-    valuation: '估值 (EOS)',
+    valuation: '估值 (TRX)',
     operating: '操作',
     go_to_trade: '去交易',
     currency: '币种',

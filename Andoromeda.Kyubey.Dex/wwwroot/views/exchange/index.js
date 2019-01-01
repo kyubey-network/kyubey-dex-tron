@@ -114,7 +114,7 @@ component.methods = {
         this.getTokenInfo();
     },
     initUserViews() {
-        ///this.getBalances();
+        this.getBalances();
         this.getOpenOrders();
         this.getHistroyOrders();
     },
@@ -756,16 +756,24 @@ component.methods = {
         }
         return true;
     },
-    getBalances: function () {
+    getBalances: async function () {
         if (this.isSignedIn) {
             var self = this;
-            this.balanceView = qv.createView(`/api/v1/lang/${app.lang}/Node/${app.account.name}/balance/${this.tokenId}`, {});
-            this.balanceView.fetch(res => {
-                if (res.code - 0 === 200) {
-                    self.eosBalance = parseFloat(res.data['EOS'] || 0);
-                    self.tokenBalance = parseFloat(res.data[this.tokenId.toUpperCase()] || 0);
+            var accountInfo = await tronWeb.trx.getAccount();
+            self.eosBalance = accountInfo.balance / 1000000.0;
+
+
+            if (!self.isTRC20(self.tokenId)) {
+                var currentToken = accountInfo.asset.find(function (e) { return e.key == self.tokenId });
+                if (currentToken) {
+                    self.tokenBalance = currentToken.value;
                 }
-            });
+            }
+            else {
+                var contractAddress = self.getTRC20Address(self.tokenId);
+                var contract = await tronWeb.contract().at(contractAddress);
+                self.tokenBalance = tronWeb.toSun((await contract.balanceOf(app.account.name).call())._hex) / 1000000000000.0;
+            }
         }
     },
     checkPercentState() {

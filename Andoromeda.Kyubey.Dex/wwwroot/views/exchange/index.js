@@ -86,7 +86,9 @@
         pageSize: 10,
         pageIndex: 1,
         jumpPage: '',
-        favoriteObj: {}
+        favoriteObj: {},
+        dexAddress: "TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8",
+        dexContractAddress: "TK6EDrMUfiRcso1uR7rNBVDjHRayKPQMoA"
     };
 };
 
@@ -350,6 +352,34 @@ component.methods = {
                 ]);
         }
     },
+    isTRC20: function (symbol) {
+        var trc20 = ["DEX", "PCB", "DRS", "RET", "DICE", "BET", "FUN", "GOC", "AB", "BFC", "WIN", "GAME", "TWJ", "ANTE", "6KPEN", "CFT", "VCOIN", "REY", "PLAY", "RING"];
+        return trc20.includes(symbol);
+    },
+    getTRC20Address: function (symbol) {
+        var addressObj = {
+            "DEX": "TF6i3aPkvhQ7Whqa8UDs7VXVhtURasnAMk",
+            "PCB": "TJzcEaqgYk9g4jZLEsB2DksLGikM4dWwYJ",
+            "DRS": "TKBURAzYP6hwcRWBzqZvqww2PZuBm5Lev7",
+            "RET": "TLCiRv2qn9tP3x59B3jtxuonyQzUHwNyUq",
+            "DICE": "THvZvKPLHKLJhEFYKiyqj6j8G8nGgfg7ur",
+            "BET": "TWGZ7HnAhZkvxiT89vCBSd6Pzwin5vt3ZA",
+            "GOC": "TYe6uNj7jxkwy28yXeLPs6KDLZCuUjXvgd",
+            "AB": "TNbYoP22d74RWy4ETssHsXYFrnmmbQ2fvt",
+            "BFC": "TYUbxiksCwDyAfNcmirnCATZgb6hyrGbir",
+            "WIN": "TBAo7PNyKo94YWUq1Cs2LBFxkhTphnAE4T",
+            "GAME": "TYPHiHUiPBPCNvqBpzy1f7bdqrZ5r8e1K7",
+            "TWJ": "TNq5PbSssK5XfmSYU4Aox4XkgTdpDoEDiY",
+            "ANTE": "TCN77KWWyUyi2A4Cu7vrh5dnmRyvUuME1E",
+            "6KPEN": "TCMjU3taxp19xNWMFQdQw45CYwQcqrsYqA",
+            "CFT": "TSkG9SSKdWV5QBuTPN6udi48rym5iPpLof",
+            "VCOIN": "TNisVGhbxrJiEHyYUMPxRzgytUtGM7vssZ",
+            "REY": "TMWkPhsb1dnkAVNy8ej53KrFNGWy9BJrfu",
+            "PLAY": "TYbSzw3PqBWohc4DdyzFDJMd1hWeNN6FkB",
+            "RING": "TL175uyihLqQD656aFx3uhHYe1tyGkmXaW"
+        }
+        return addressObj[symbol];
+    },
     async scatterBuy(buySymbol, buyPrice, buyAmount, buyTotal) {
         var self = this;
         const { account, requiredFields, eos } = app;
@@ -357,9 +387,23 @@ component.methods = {
 
 
         if (this.control.trade === 'limit') {
-            var address = "TMWkPhsb1dnkAVNy8ej53KrFNGWy9BJrfu";
+            ////trc10
+            //if (!self.isTRC20(this.tokenId)) {
+            //    await tronWeb.trx.sendTrx(self.dexAddress, 1000000 * buyTotal);
+            //}
+            ////trc20
+            //else {
+            //    var contractAddress = self.getTRC20Address(self.tokenId);
+            //    var contract = await tronWeb.contract().at(contractAddress);
+            //    contract.transfer(self.dexAddress, 1000000 * buyTotal).send();
+            //}
+            await tronWeb.trx.sendTrx(self.dexAddress, 1000000 * buyTotal);
+            var dexContract = await tronWeb.contract().at(self.dexContractAddress);
+            await dexContract.exchange(1000000 * buyAmount, 1000000 * buyTotal, self.tokenId, "TRX").send();
+            showModal($t('delegate_succeed'), $t('You can confirm the result in your wallet') + ',' + $t('Please contact us if you have any questions'));
+            //var address = "TMWkPhsb1dnkAVNy8ej53KrFNGWy9BJrfu";
             //await tronWeb.trx.sendTrx("TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8", 100);
-            await tronWeb.trx.sendToken("TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8", 1,"REVOLUTION");
+            //await tronWeb.trx.sendToken("TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8", 1, "REVOLUTION");
 
             //var contract = await tronWeb.contract().at(address);
             //contract.transfer("TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8", 100).send();
@@ -374,8 +418,6 @@ component.methods = {
             //    const contract = tronWeb.contract(abiObj, "4137f3d3225bedabcc7e4a1");
             //    console.log(contract);
             //});
-
-
         }
         else if (this.control.trade === 'market') {
             eos.contract('eosio.token', { requiredFields })
@@ -459,7 +501,6 @@ component.methods = {
     },
     simpleWalletSell(sellSymbol, sellPrice, sellAmount, sellTotal) {
         const $t = this.$t.bind(this);
-
         if (this.control.trade === 'limit') {
             var reqObj = this._getExchangeRequestObj(app.account.name, "kyubeydex.bp", sellAmount, this.baseInfo.contract.transfer, sellSymbol, 4, app.uuid, `${sellTotal.toFixed(app.precision.total)} EOS`);
             app.startQRCodeExchange($t('exchange_tip'), JSON.stringify(reqObj),
@@ -494,31 +535,27 @@ component.methods = {
                 ]);
         }
     },
-    scatterSell(sellSymbol, sellPrice, sellAmount, sellTotal) {
+    async  scatterSell(sellSymbol, sellPrice, sellAmount, sellTotal) {
         var self = this;
         const { account, requiredFields, eos } = app;
         const $t = this.$t.bind(this);
 
         if (this.control.trade === 'limit') {
-            eos.contract(this.baseInfo.contract.transfer, { requiredFields })
-                .then(contract => {
-                    return contract.transfer(
-                        account.name,
-                        'kyubeydex.bp',
-                        sellAmount.toFixed(app.precision.amount) + ' ' + sellSymbol,
-                        sellTotal.toFixed(app.precision.total) + ' EOS',
-                        {
-                            authorization: [`${account.name}@${account.authority}`]
-                        });
-                })
-                .then(() => {
-                    self.delayRefresh(self.refreshUserViews);
+            //trc10
+            if (!self.isTRC20(this.tokenId)) {
+                await tronWeb.trx.sendToken(self.dexAddress, sellAmount, sellSymbol);
+            }
+            //trc20
+            else {
+                var contractAddress = self.getTRC20Address(self.tokenId);
+                var contract = await tronWeb.contract().at(contractAddress);
+                await contract.transfer(self.dexAddress, 1000000 * sellAmount).send();
+            }
 
-                    showModal($t('delegate_succeed'), $t('You can confirm the result in your wallet') + ',' + $t('Please contact us if you have any questions'));
-                })
-                .catch(error => {
-                    showModal($t('Transaction Failed'), error.message + $t('Please contact us if you have any questions'), "error");
-                });
+            var dexContract = await tronWeb.contract().at(self.dexContractAddress);
+            await dexContract.exchange(1000000 * sellTotal, 1000000 * sellAmount, "TRX", self.tokenId).send();
+
+            showModal($t('delegate_succeed'), $t('You can confirm the result in your wallet') + ',' + $t('Please contact us if you have any questions'));
         }
         else if (this.control.trade === 'market') {
             eos.contract(this.baseInfo.contract.transfer, { requiredFields })

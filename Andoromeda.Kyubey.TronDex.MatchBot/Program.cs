@@ -27,10 +27,10 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
             var optionsBuilder = new DbContextOptionsBuilder<KyubeyContext>();
             optionsBuilder.UseMySql(configuration["MySQL"]);
-            var dbContext = new KyubeyContext(optionsBuilder.Options);
+            db = new KyubeyContext(optionsBuilder.Options);
 
             Console.WriteLine("Matching bot is starting...");
-            await tronCliClient.ImportWalletAsync(cliWalletPwd, "7b81cd82b28dbf9a6efb21de40fb263d83e286644ca04f910f486cb90a7a8357");
+            //await tronCliClient.ImportWalletAsync(cliWalletPwd, "7b81cd82b28dbf9a6efb21de40fb263d83e286644ca04f910f486cb90a7a8357");
             await tronCliClient.LoginAsync(cliWalletPwd);
 
             while (true)
@@ -217,32 +217,35 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             }
         }
 
+
+        private static Dictionary<string, string> symbolAddress = new Dictionary<string, string>
+        {
+            {"DEX","TF6i3aPkvhQ7Whqa8UDs7VXVhtURasnAMk" },
+            {"PCB","TJzcEaqgYk9g4jZLEsB2DksLGikM4dWwYJ" },
+            {"DRS","TKBURAzYP6hwcRWBzqZvqww2PZuBm5Lev7" },
+            {"RET","TLCiRv2qn9tP3x59B3jtxuonyQzUHwNyUq" },
+            {"DICE","THvZvKPLHKLJhEFYKiyqj6j8G8nGgfg7ur" },
+            {"BET","TWGZ7HnAhZkvxiT89vCBSd6Pzwin5vt3ZA" },
+            {"GOC","TYe6uNj7jxkwy28yXeLPs6KDLZCuUjXvgd" },
+            {"AB","TNbYoP22d74RWy4ETssHsXYFrnmmbQ2fvt" },
+            {"BFC","TYUbxiksCwDyAfNcmirnCATZgb6hyrGbir" },
+            {"WIN","TBAo7PNyKo94YWUq1Cs2LBFxkhTphnAE4T" },
+            {"GAME","TYPHiHUiPBPCNvqBpzy1f7bdqrZ5r8e1K7" },
+            {"TWJ","TNq5PbSssK5XfmSYU4Aox4XkgTdpDoEDiY" },
+            {"ANTE","TCN77KWWyUyi2A4Cu7vrh5dnmRyvUuME1E" },
+            {"6KPEN","TCMjU3taxp19xNWMFQdQw45CYwQcqrsYqA" },
+            {"CFT","TSkG9SSKdWV5QBuTPN6udi48rym5iPpLof" },
+            {"VCOIN","TNisVGhbxrJiEHyYUMPxRzgytUtGM7vssZ" },
+            {"REY","TMWkPhsb1dnkAVNy8ej53KrFNGWy9BJrfu" },
+            {"PLAY","TYbSzw3PqBWohc4DdyzFDJMd1hWeNN6FkB" },
+            {"RING","TL175uyihLqQD656aFx3uhHYe1tyGkmXaW" }
+        };
+
+
         static string GetSymbolContract(string symbol)
         {
-            var addressDict = new Dictionary<string, string>
-            {
-                {"DEX","TF6i3aPkvhQ7Whqa8UDs7VXVhtURasnAMk" },
-                {"PCB","TJzcEaqgYk9g4jZLEsB2DksLGikM4dWwYJ" },
-                {"DRS","TKBURAzYP6hwcRWBzqZvqww2PZuBm5Lev7" },
-                {"RET","TLCiRv2qn9tP3x59B3jtxuonyQzUHwNyUq" },
-                {"DICE","THvZvKPLHKLJhEFYKiyqj6j8G8nGgfg7ur" },
-                {"BET","TWGZ7HnAhZkvxiT89vCBSd6Pzwin5vt3ZA" },
-                {"GOC","TYe6uNj7jxkwy28yXeLPs6KDLZCuUjXvgd" },
-                {"AB","TNbYoP22d74RWy4ETssHsXYFrnmmbQ2fvt" },
-                {"BFC","TYUbxiksCwDyAfNcmirnCATZgb6hyrGbir" },
-                {"WIN","TBAo7PNyKo94YWUq1Cs2LBFxkhTphnAE4T" },
-                {"GAME","TYPHiHUiPBPCNvqBpzy1f7bdqrZ5r8e1K7" },
-                {"TWJ","TNq5PbSssK5XfmSYU4Aox4XkgTdpDoEDiY" },
-                {"ANTE","TCN77KWWyUyi2A4Cu7vrh5dnmRyvUuME1E" },
-                {"6KPEN","TCMjU3taxp19xNWMFQdQw45CYwQcqrsYqA" },
-                {"CFT","TSkG9SSKdWV5QBuTPN6udi48rym5iPpLof" },
-                {"VCOIN","TNisVGhbxrJiEHyYUMPxRzgytUtGM7vssZ" },
-                {"REY","TMWkPhsb1dnkAVNy8ej53KrFNGWy9BJrfu" },
-                {"PLAY","TYbSzw3PqBWohc4DdyzFDJMd1hWeNN6FkB" },
-                {"RING","TL175uyihLqQD656aFx3uhHYe1tyGkmXaW" }
-            };
-            if (addressDict.ContainsKey(symbol))
-                return addressDict[symbol];
+            if (symbolAddress.ContainsKey(symbol))
+                return symbolAddress[symbol];
             return null;
         }
 
@@ -288,12 +291,12 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
         static bool IsTrc10(string symbol)
         {
-            return new[] { "TronGameGlobalPay" }.Contains(symbol);
+            return !IsTrc20(symbol);
         }
 
         static bool IsTrc20(string symbol)
         {
-            return new[] { "GOC" }.Contains(symbol);
+            return symbolAddress.ContainsKey(symbol);
         }
     }
 }

@@ -326,6 +326,9 @@
         },
         scatterLogout: function () {
             var self = this;
+            self.account = null;
+            self.loginMode = null;
+            return;
             if (self.loginMode && (self.loginMode === 'Scatter Addons' || self.loginMode === 'Scatter Desktop')) {
                 scatter.forgetIdentity()
                     .then(() => {

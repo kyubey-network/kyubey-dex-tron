@@ -257,7 +257,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             }
             else if (IsTrc20(symbol))
             {
-                await tronCliClient.TransferTRC20Async(address, symbol, Convert.ToInt64(1000000 * amount));
+                await tronCliClient.TransferTRC20Async(address, symbolAddress[symbol], Convert.ToInt64(1000000 * amount));
             }
             else
             {

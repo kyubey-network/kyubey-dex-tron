@@ -208,6 +208,11 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
                     process.StandardInput.WriteLine(this.password);
                     return null;
                 }
+                else if (str.Contains("Please confirm that you want to continue enter y or Y, else any other."))
+                {
+                    process.StandardInput.WriteLine("y");
+                    return null;
+                }
                 else if (str.Contains("triggerContract successfully"))
                 {
                     return true;

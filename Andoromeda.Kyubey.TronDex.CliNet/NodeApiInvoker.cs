@@ -35,7 +35,7 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             }
         }
 
-        public async Task<TransactionListResponse> GetTransactionByAdressAsync(string address, int skip = 0, int take = 10, string sort = "-timestamp", CancellationToken cancellationToken = default)
+        public async Task<TransactionListResponse> GetTransactionByAddressAsync(string address, int skip = 0, int take = 10, string sort = "-timestamp", CancellationToken cancellationToken = default)
         {
             using (var response = await _client.GetAsync($"/api/transaction?sort={sort}&limit={take}&start={skip}&address={address}", cancellationToken))
             {

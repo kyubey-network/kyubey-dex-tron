@@ -14,7 +14,8 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
     {
         static KyubeyContext db;
         static NodeApiInvoker api = new NodeApiInvoker();
-        static string dexAddress = ""; // cli绑的哪个账号就填哪个地址
+        static string dexTransferAddress = "TBVbLiQirADEdMsTL4WeTgNmMAgeoS16cF"; // cli绑的哪个账号就填哪个地址
+        const string dexContractAddress = "TK6EDrMUfiRcso1uR7rNBVDjHRayKPQMoA";
         static TronCliClient tronCliClient = new TronCliClient(@"C:\wallet-cli\", @"build\libs\wallet-cli.jar");
         static string cliWalletPwd = "Passw0rd";
 
@@ -37,7 +38,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             {
                 var posItem = await db.Constants.SingleOrDefaultAsync(x => x.Id == "exchange_pos");
                 var pos = Convert.ToInt64(posItem.Value);
-                var result = await api.GetContractTransactionsAsync("TK6EDrMUfiRcso1uR7rNBVDjHRayKPQMoA");
+                var result = await api.GetContractTransactionsAsync(dexContractAddress);
                 foreach (var x in result.Data)
                 {
                     if (x.Block <= pos)
@@ -57,6 +58,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                     var askSymbol = call.Parameters.First(y => y.Name == "ask").Value;
                     var askAmount = Convert.ToInt64(call.Parameters.First(y => y.Name == "askamount").Value);
                     var transferHash = await GetTransferHashAsync(owner, bidAmount, bidSymbol);
+
                     if (transferHash == null)
                     {
                         if (!db.TronTrades.Any(t => t.Id == x.TxHash))
@@ -250,12 +252,12 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             return null;
         }
 
-        static async Task<string> GetTransferHashAsync(string address, long amount, string symbol)
+        static async Task<string> GetTransferHashAsync(string userAddress, long amount, string symbol)
         {
             if (symbol == "TRX" || IsTrc10(symbol))
             {
-                var result = await api.GetTransfersAsync(address, symbol);
-                var matched = result.Data.Where(x => x.Amount == amount && x.TransferToAddress == dexAddress);
+                var result = await api.GetTransfersAsync(userAddress, symbol);
+                var matched = result.Data.Where(x => x.Amount == amount && x.TransferToAddress == dexTransferAddress);
                 foreach (var x in matched)
                 {
                     if (!await db.TronTrades.AnyAsync(y => y.TransferHash == x.TransactionHash))
@@ -263,32 +265,38 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                         return x.TransactionHash;
                     }
                 }
-
-                return null;
             }
             else if (IsTrc20(symbol))
             {
-                var result = await api.GetTransactionByAdressAsync(address);
-                var matched = result.Data
-                    .Where(x => x.SmartCalls != null && x.SmartCalls
-                        .Any(y => y.Calls.FirstOrDefault()?.Name == "transfer"
-                            && y.Calls.FirstOrDefault()?.Parameters.First(z => z.Name == "to").Value == dexAddress
-                            && Convert.ToInt64(y.Calls.FirstOrDefault()?.Parameters.First(z => z.Name == "value").Value) == amount));
+                var result = await api.GetTransactionByAddressAsync(userAddress, take: 1000);
+                var userTransDbLogs = await db.TronTrades.Where(x => x.Account == userAddress).ToListAsync();
+                var userTransChainLogs = result.Data.Where(x => x.ToAddress == dexTransferAddress).ToList();
 
-                foreach (var x in matched)
+                foreach (var ucLog in userTransChainLogs)
                 {
-                    if (!await db.TronTrades.AnyAsync(y => y.TransferHash == x.Hash))
-                    {
-                        return x.Hash;
-                    }
-                }
+                    if (userTransDbLogs.Any(x => x.TransferHash == ucLog.Hash))
+                        continue;
 
-                return null;
+                    var logDetail = await api.GetTransactionAsync(ucLog.Hash);
+
+                    if (logDetail.SmartCalls != null)
+                    {
+                        if (symbolAddress[symbol] != logDetail.SmartCalls.FirstOrDefault().Contract)
+                            continue;
+
+                        var callObj = logDetail.SmartCalls.FirstOrDefault()?.Calls.FirstOrDefault(x => x.Name == "transfer");
+                        if (callObj != null)
+                        {
+                            if (callObj.Parameters.Any(x => x.Name == "value" && Convert.ToInt64(x.Value) == amount)
+                                && callObj.Parameters.Any(x => x.Name == "to" && x.Value == dexTransferAddress))
+                            {
+                                return ucLog.Hash;
+                            }
+                        }
+                    }
+                }          
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
 
         static bool IsTrc10(string symbol)

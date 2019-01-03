@@ -319,8 +319,11 @@
                         };
                     }
                 }
+                else {
+                    showModal($t('LoginFaild'), $t('Please unlock your TronLink wallet'));
+                }
             } else {
-                console.log('No tronWeb? You should install TronPay!')
+                showModal($t('LoginFaild'), $t('No tronWeb ? You should install TronPay!'));
             }
             $('#loginModal').modal('hide');
         },

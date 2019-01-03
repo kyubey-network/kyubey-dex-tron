@@ -22,7 +22,7 @@ const en = {
     lowest_price_24H: '24h low',
     volume_24H: '24h volume',
     scatter_not_found: 'Scatter not found',
-    scatter_tip: 'Scatter is an EOS wallet. Please make sure that Scatter is installed. Scatter website: https://get-scatter.com',
+    scatter_tip: 'TronLink is an Tron wallet. Please make sure that TronLink is installed.',
     qrcode_login: 'App wallet QR code scanning login',
     qrcode_tip: 'Please make sure that App version supports QR code scanning authorization.',
     token_introduction: 'Token Description',

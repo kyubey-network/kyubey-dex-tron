@@ -137,7 +137,7 @@ component.methods = {
         });
     },
     refreshUserViews() {
-        this.balanceView.refresh();
+        this.getBalances();
         this.openOrdersView.refresh();
         this.histroyOrdersView.refresh();
     },

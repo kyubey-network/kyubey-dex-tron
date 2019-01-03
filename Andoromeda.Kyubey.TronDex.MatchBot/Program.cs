@@ -36,14 +36,14 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
             while (true)
             {
-                var posItem = await db.Constants.SingleOrDefaultAsync(x => x.Id == "exchange_pos");
+                var posItem = await db.Constants.FirstOrDefaultAsync(x => x.Id == "exchange_pos");
                 var pos = Convert.ToInt64(posItem.Value);
                 var result = await api.GetContractTransactionsAsync(dexContractAddress);
                 foreach (var x in result.Data.OrderBy(x => x.Block))
                 {
                     if (x.Block <= pos)
                     {
-                        break;
+                        continue;
                     }
 
                     var tx = await api.GetTransactionAsync(x.TxHash);
@@ -118,7 +118,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             //sell
             if (askSymbol == "TRX")
             {
-                var price = (double)askAmount / (double)bidAmount;
+                var price = askAmount / bidAmount;
                 var order = new DexSellOrder
                 {
                     Account = account,
@@ -133,22 +133,35 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                     .Where(x => x.UnitPrice >= price)
                     .ToListAsync();
 
+                var remianAmount = bidAmount;
+
                 foreach (var x in orders)
                 {
-                    var amount = x.Bid < askAmount ? askAmount : x.Bid;
-                    x.Bid -= amount; // 2元
-                    x.Ask -= amount / x.UnitPrice; // 1个苹果
+                    if (remianAmount <= 0)
+                        break;
+                    //token amount
+                    var amount = x.Ask < remianAmount ? x.Ask : remianAmount;
+                    x.Ask -= amount; // 2元
+                    x.Bid -= amount * x.UnitPrice; // 1个苹果
 
-                    await TransferAsync(x.Account, Convert.ToInt64(amount / x.UnitPrice), bidSymbol);
-                    await TransferAsync(account, Convert.ToInt64(amount), askSymbol);
+                    order.Bid -= amount;
+                    order.Ask -= amount * price;
+
+                    remianAmount -= amount;
+
+                    await TransferAsync(x.Account, amount, bidSymbol);
+                    await TransferAsync(account, amount * price, askSymbol);
 
                     db.MatchReceipts.Add(new MatchReceipt
                     {
                         IsSellMatch = true,
                         Asker = account,
-                        Ask = amount,
+                        Ask = amount * x.UnitPrice,
                         Bidder = x.Account,
-                        Bid = Convert.ToInt64(amount / x.UnitPrice)
+                        Bid = amount,
+                        Time = DateTime.Now,
+                        TokenId = bidSymbol,
+                        UnitPrice = x.UnitPrice
                     });
 
                     if (x.Ask == 0 || x.Bid == 0)
@@ -167,7 +180,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             //buy
             else
             {
-                var price = (double)bidAmount / (double)askAmount;
+                double price = bidAmount / askAmount;
                 var order = new DexBuyOrder
                 {
                     TransferHash = transferHash,
@@ -179,26 +192,39 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                     UnitPrice = price
                 };
 
-                var orders = await db.DexSellOrders.Where(x => x.TokenId == bidSymbol)
+                var orders = await db.DexSellOrders.Where(x => x.TokenId == askSymbol)
                     .Where(x => x.UnitPrice <= price)
                     .ToListAsync();
 
+                var remianAmount = askAmount;
+
                 foreach (var x in orders)
                 {
-                    var amount = x.Bid < askAmount ? askAmount : x.Bid;
+                    if (remianAmount <= 0)
+                        break;
+
+                    var amount = x.Bid < remianAmount ? remianAmount : x.Bid;
                     x.Bid -= amount; // 1个苹果
                     x.Ask -= amount * x.UnitPrice; // 2元
 
-                    await TransferAsync(x.Account, Convert.ToInt64(amount * x.UnitPrice), bidSymbol);
-                    await TransferAsync(account, Convert.ToInt64(amount), askSymbol);
+                    order.Ask -= amount;
+                    order.Bid -= amount * x.UnitPrice;
+
+                    remianAmount -= amount;
+
+                    await TransferAsync(x.Account, amount * x.UnitPrice, bidSymbol);
+                    await TransferAsync(account, amount, askSymbol);
 
                     db.MatchReceipts.Add(new MatchReceipt
                     {
                         IsSellMatch = false,
-                        Asker = x.Account,
+                        Asker = account,
                         Ask = amount,
-                        Bidder = account,
-                        Bid = Convert.ToInt64(amount * x.UnitPrice)
+                        Bidder = x.Account,
+                        Bid = amount * x.UnitPrice,
+                        UnitPrice = price,
+                        TokenId = askSymbol,
+                        Time = DateTime.Now
                     });
 
                     if (x.Ask == 0 || x.Bid == 0)
@@ -216,19 +242,22 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             }
         }
 
-        static async Task TransferAsync(string address, long amount, string symbol)
+        static async Task TransferAsync(string address, double amount, string symbol)
         {
+            if (Convert.ToInt64(amount) <= 0)
+                return;
+
             if (symbol == "TRX")
             {
-                await tronCliClient.SendCoinAsync(address, amount);
+                await tronCliClient.SendCoinAsync(address, Convert.ToInt64(1000000 * amount));
             }
             else if (IsTrc10(symbol))
             {
-                await tronCliClient.TransferTRC10Async(address, symbol, amount);
+                await tronCliClient.TransferTRC10Async(address, symbol, Convert.ToInt64(amount));
             }
             else if (IsTrc20(symbol))
             {
-                await tronCliClient.TransferTRC20Async(address, symbol, amount);
+                await tronCliClient.TransferTRC20Async(address, symbol, Convert.ToInt64(1000000 * amount));
             }
             else
             {

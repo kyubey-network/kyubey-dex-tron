@@ -173,7 +173,7 @@ namespace Andoromeda.Kyubey.Models
 
             builder.Entity<DexBuyOrder>(e =>
             {
-                e.HasKey(x => new { x.Id, x.TokenId });
+                //e.HasKey(x => new { x.Id, x.TokenId });
                 e.HasIndex(x => x.TokenId);
                 e.HasIndex(x => x.Time);
                 e.HasIndex(x => x.UnitPrice);
@@ -181,7 +181,7 @@ namespace Andoromeda.Kyubey.Models
 
             builder.Entity<DexSellOrder>(e =>
             {
-                e.HasKey(x => new { x.Id, x.TokenId });
+                //e.HasKey(x => new { x.Id, x.TokenId });
                 e.HasIndex(x => x.TokenId);
                 e.HasIndex(x => x.Time);
                 e.HasIndex(x => x.UnitPrice);

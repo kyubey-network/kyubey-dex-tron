@@ -39,7 +39,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                 var posItem = await db.Constants.SingleOrDefaultAsync(x => x.Id == "exchange_pos");
                 var pos = Convert.ToInt64(posItem.Value);
                 var result = await api.GetContractTransactionsAsync(dexContractAddress);
-                foreach (var x in result.Data)
+                foreach (var x in result.Data.OrderBy(x => x.Block))
                 {
                     if (x.Block <= pos)
                     {
@@ -80,30 +80,42 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                         continue;
                     }
 
-                    db.TronTrades.Add(new TronTrade
+                    var dbInstance = db.TronTrades.FirstOrDefault(t => t.Id == x.TxHash);
+                    if (dbInstance == null)
                     {
-                        Id = x.TxHash,
-                        Status = TronTradeStatus.ValidateFailed,
-                        Account = owner,
-                        AskAmount = askAmount,
-                        AskSymbol = askSymbol,
-                        BidAmount = bidAmount,
-                        BidSymbol = bidSymbol,
-                        Time = new DateTime(x.Timestamp),
-                        TransferHash = transferHash
-                    });
+                        db.TronTrades.Add(new TronTrade
+                        {
+                            Id = x.TxHash,
+                            Status = TronTradeStatus.ValidateFailed,
+                            Account = owner,
+                            AskAmount = askAmount,
+                            AskSymbol = askSymbol,
+                            BidAmount = bidAmount,
+                            BidSymbol = bidSymbol,
+                            Time = new DateTime(x.Timestamp),
+                            TransferHash = transferHash
+                        });
+                    }
+                    else
+                    {
+                        dbInstance.TransferHash = transferHash;
+                    }
 
                     posItem.Value = x.Block.ToString();
                     await db.SaveChangesAsync();
-                    await DoMatchAsync(owner, askSymbol, askAmount, bidSymbol, bidAmount);
+                    await DoMatchAsync(transferHash, owner, askSymbol, askAmount, bidSymbol, bidAmount);
                 }
 
                 await Task.Delay(15000);
             }
         }
 
-        static async Task DoMatchAsync(string account, string askSymbol, long askAmount, string bidSymbol, long bidAmount)
+        static async Task DoMatchAsync(string transferHash, string account, string askSymbol, double askAmount, string bidSymbol, double bidAmount)
         {
+            askAmount /= 1000000;
+            bidAmount /= 1000000;
+
+            //sell
             if (askSymbol == "TRX")
             {
                 var price = (double)askAmount / (double)bidAmount;
@@ -152,15 +164,17 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
 
                 await db.SaveChangesAsync();
             }
+            //buy
             else
             {
                 var price = (double)bidAmount / (double)askAmount;
                 var order = new DexBuyOrder
                 {
+                    TransferHash = transferHash,
                     Account = account,
                     Ask = askAmount,
                     Bid = bidAmount,
-                    TokenId = bidSymbol,
+                    TokenId = askSymbol,
                     Time = DateTime.Now,
                     UnitPrice = price
                 };
@@ -270,9 +284,9 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             {
                 var result = await api.GetTransactionByAddressAsync(userAddress, take: 1000);
                 var userTransDbLogs = await db.TronTrades.Where(x => x.Account == userAddress).ToListAsync();
-                var userTransChainLogs = result.Data.Where(x => x.ToAddress == dexTransferAddress).ToList();
+                var userTransChainLogs = result.Data.Where(x => x.ToAddress == symbolAddress[symbol]).ToList();
 
-                foreach (var ucLog in userTransChainLogs)
+                foreach (var ucLog in result.Data.Where(x => x.ToAddress == symbolAddress[symbol]))
                 {
                     if (userTransDbLogs.Any(x => x.TransferHash == ucLog.Hash))
                         continue;
@@ -294,7 +308,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                             }
                         }
                     }
-                }          
+                }
             }
             return null;
         }

@@ -20,5 +20,7 @@ namespace Andoromeda.Kyubey.Models
         public double UnitPrice { get; set; }
 
         public DateTime Time { get; set; }
+
+        public string TransferHash { get; set; }
     }
 }

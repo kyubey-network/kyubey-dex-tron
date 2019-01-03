@@ -87,7 +87,7 @@
         pageIndex: 1,
         jumpPage: '',
         favoriteObj: {},
-        dexAddress: "TPq7HbnLXuapW9oazU6Pqsrp1cduapZhj8",
+        dexAddress: "TBVbLiQirADEdMsTL4WeTgNmMAgeoS16cF",
         dexContractAddress: "TK6EDrMUfiRcso1uR7rNBVDjHRayKPQMoA"
     };
 };
@@ -762,7 +762,6 @@ component.methods = {
             var accountInfo = await tronWeb.trx.getAccount();
             self.eosBalance = accountInfo.balance / 1000000.0;
 
-
             if (!self.isTRC20(self.tokenId)) {
                 var currentToken = accountInfo.asset.find(function (e) { return e.key == self.tokenId });
                 if (currentToken) {
@@ -772,7 +771,8 @@ component.methods = {
             else {
                 var contractAddress = self.getTRC20Address(self.tokenId);
                 var contract = await tronWeb.contract().at(contractAddress);
-                self.tokenBalance = tronWeb.toSun((await contract.balanceOf(app.account.name).call())._hex) / 1000000000000.0;
+                var balanceObj = await contract.balanceOf(app.account.name).call();
+                self.tokenBalance = tronWeb.toSun(balanceObj.balance._hex) / 1000000000000.0;
             }
         }
     },

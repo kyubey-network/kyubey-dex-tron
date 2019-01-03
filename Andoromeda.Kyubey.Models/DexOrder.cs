@@ -7,7 +7,7 @@ namespace Andoromeda.Kyubey.Models
     {
         public long Id { get; set; }
 
-        [MaxLength(16)]
+        [MaxLength(50)]
         public string Account { get; set; }
 
         [MaxLength(16)]

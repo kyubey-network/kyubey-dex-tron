@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -203,7 +203,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                     if (remianAmount <= 0)
                         break;
 
-                    var amount = x.Bid < remianAmount ? remianAmount : x.Bid;
+                    var amount = x.Bid < remianAmount ? x.Bid : remianAmount;
                     x.Bid -= amount; // 1个苹果
                     x.Ask -= amount * x.UnitPrice; // 2元
 

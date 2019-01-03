@@ -59,19 +59,22 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                     var transferHash = await GetTransferHashAsync(owner, bidAmount, bidSymbol);
                     if (transferHash == null)
                     {
-                        db.TronTrades.Add(new TronTrade
+                        if (!db.TronTrades.Any(t => t.Id == x.TxHash))
                         {
-                            Id = x.TxHash,
-                            Status = TronTradeStatus.ValidateFailed,
-                            Account = owner,
-                            AskAmount = askAmount,
-                            AskSymbol = askSymbol,
-                            BidAmount = bidAmount,
-                            BidSymbol = bidSymbol,
-                            Time = new DateTime(x.Timestamp),
-                            TransferHash = null
-                        });
-                        await db.SaveChangesAsync();
+                            db.TronTrades.Add(new TronTrade
+                            {
+                                Id = x.TxHash,
+                                Status = TronTradeStatus.ValidateFailed,
+                                Account = owner,
+                                AskAmount = askAmount,
+                                AskSymbol = askSymbol,
+                                BidAmount = bidAmount,
+                                BidSymbol = bidSymbol,
+                                Time = new DateTime(x.Timestamp),
+                                TransferHash = null
+                            });
+                            await db.SaveChangesAsync();
+                        }
                         continue;
                     }
 
@@ -217,7 +220,6 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             }
         }
 
-
         private static Dictionary<string, string> symbolAddress = new Dictionary<string, string>
         {
             {"DEX","TF6i3aPkvhQ7Whqa8UDs7VXVhtURasnAMk" },
@@ -240,7 +242,6 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             {"PLAY","TYbSzw3PqBWohc4DdyzFDJMd1hWeNN6FkB" },
             {"RING","TL175uyihLqQD656aFx3uhHYe1tyGkmXaW" }
         };
-
 
         static string GetSymbolContract(string symbol)
         {
@@ -267,12 +268,13 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             }
             else if (IsTrc20(symbol))
             {
-                var result = await api.GetTransactionListAsync(address);
+                var result = await api.GetTransactionByAdressAsync(address);
                 var matched = result.Data
-                    .Where(x => x.SmartCalls
+                    .Where(x => x.SmartCalls != null && x.SmartCalls
                         .Any(y => y.Calls.FirstOrDefault()?.Name == "transfer"
                             && y.Calls.FirstOrDefault()?.Parameters.First(z => z.Name == "to").Value == dexAddress
                             && Convert.ToInt64(y.Calls.FirstOrDefault()?.Parameters.First(z => z.Name == "value").Value) == amount));
+
                 foreach (var x in matched)
                 {
                     if (!await db.TronTrades.AnyAsync(y => y.TransferHash == x.Hash))

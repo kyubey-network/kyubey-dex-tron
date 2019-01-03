@@ -35,9 +35,18 @@ namespace Andoromeda.Kyubey.TronDex.CliNet
             }
         }
 
-        public async Task<TransactionListResponse> GetTransactionListAsync(string account, int? block = default, CancellationToken cancellationToken = default)
+        public async Task<TransactionListResponse> GetTransactionByAdressAsync(string address, int skip = 0, int take = 10, string sort = "-timestamp", CancellationToken cancellationToken = default)
         {
-            using (var response = await _client.GetAsync($"/api/transaction?hash={account}&block={block}", cancellationToken))
+            using (var response = await _client.GetAsync($"/api/transaction?sort={sort}&limit={take}&start={skip}&address={address}", cancellationToken))
+            {
+                var responseText = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TransactionListResponse>(responseText);
+            }
+        }
+
+        public async Task<TransactionListResponse> GetTransactionListAsync(string hash, int? block = default, CancellationToken cancellationToken = default)
+        {
+            using (var response = await _client.GetAsync($"/api/transaction?hash={hash}&block={block}", cancellationToken))
             {
                 var responseText = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<TransactionListResponse>(responseText);

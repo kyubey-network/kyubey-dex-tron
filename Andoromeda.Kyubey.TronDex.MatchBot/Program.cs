@@ -7,6 +7,7 @@ using Andoromeda.Kyubey.TronDex.CliNet;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Andoromeda.Kyubey.TronDex.MatchBot
 {
@@ -47,6 +48,22 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                     }
 
                     var tx = await api.GetTransactionAsync(x.TxHash);
+                    if (tx.SmartCalls == null)
+                    {
+                        Thread.Sleep(1000);
+                        tx = await api.GetTransactionAsync(x.TxHash);
+                    }
+                    if (tx.SmartCalls == null)
+                    {
+                        Thread.Sleep(3000);
+                        tx = await api.GetTransactionAsync(x.TxHash);
+                    }
+                    if (tx.SmartCalls == null)
+                    {
+                        Thread.Sleep(5000);
+                        tx = await api.GetTransactionAsync(x.TxHash);
+                    }
+
                     var owner = tx.SmartCalls.First().Owner;
                     var call = tx.SmartCalls.First().Calls.FirstOrDefault(y => y.Name == "exchange");
                     if (call == null)
@@ -106,7 +123,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
                     await DoMatchAsync(transferHash, owner, askSymbol, askAmount, bidSymbol, bidAmount);
                 }
 
-                await Task.Delay(15000);
+                await Task.Delay(2000);
             }
         }
 

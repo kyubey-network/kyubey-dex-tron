@@ -17,7 +17,7 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
         static NodeApiInvoker api = new NodeApiInvoker();
         static string dexTransferAddress = "TBVbLiQirADEdMsTL4WeTgNmMAgeoS16cF"; // cli绑的哪个账号就填哪个地址
         const string dexContractAddress = "TK6EDrMUfiRcso1uR7rNBVDjHRayKPQMoA";
-        static TronCliClient tronCliClient = new TronCliClient(@"C:\wallet-cli\", @"build\libs\wallet-cli.jar");
+        static TronCliClient tronCliClient;
         static string cliWalletPwd = "Passw0rd";
 
         static async Task Main(string[] args)
@@ -30,6 +30,8 @@ namespace Andoromeda.Kyubey.TronDex.MatchBot
             var optionsBuilder = new DbContextOptionsBuilder<KyubeyContext>();
             optionsBuilder.UseMySql(configuration["MySQL"]);
             db = new KyubeyContext(optionsBuilder.Options);
+
+            tronCliClient = new TronCliClient(configuration["WalletWorkPath"], configuration["WalletFilePath"]);
 
             Console.WriteLine("Matching bot is starting...");
             //await tronCliClient.ImportWalletAsync(cliWalletPwd, "7b81cd82b28dbf9a6efb21de40fb263d83e286644ca04f910f486cb90a7a8357");

@@ -141,7 +141,7 @@ const en = {
     tip_exchange_adjuct_zero: 'To protect your trading in decimals, the minimum sell price of the current price({price}) is {min_count}. Please adjust your price or increase the sell amount. Thank you.',
     orders: 'Orders',
     history: 'History',
-    scatter_sign_in: 'TronLink login',
+    scatter_sign_in: 'TronPay login',
     turnover_24H: '24H Total: ',
     order_detail: 'The order details',
     please_input_name: 'Please enter a name',

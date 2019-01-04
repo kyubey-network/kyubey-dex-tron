@@ -250,6 +250,11 @@ LazyRouting._loadComponentAsync = async function (rule, map) {
 
     var func = component.created;
     component.created = function () {
+        const $t = this.$t.bind(this);
+        if (window.innerWidth < 768) {
+            alert($t('Please use your computer to browse the web'));            
+            return;
+        }
         $(window).scrollTop(0);
         var data = LazyRouting._parseQueryString(this.$options.data, router.history.current.query)();
         Object.assign(this.$data, data);

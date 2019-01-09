@@ -15,7 +15,7 @@ namespace Andoromeda.Kyubey.Dex
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddConfiguration(out var config, "appsettings");
+            services.AddConfiguration2(out var config, "appsettings");
             services.AddDbContext<KyubeyContext>(x => x.UseMySql(config["MySql"]));
             services.AddSwaggerGen(x =>
             {

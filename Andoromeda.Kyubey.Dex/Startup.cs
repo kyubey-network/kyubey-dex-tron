@@ -23,7 +23,7 @@ namespace Andoromeda.Kyubey.Dex
                 x.DocInclusionPredicate((docName, apiDesc) => apiDesc.HttpMethod != null);
                 x.DescribeAllEnumsAsStrings();
             });
-            services.AddMySqlLogger("kyubey-dex");
+            services.AddMySqlLogger("kyubey-dex", config["MySql"]);
 
             services.AddNodeServices(x =>
                 x.ProjectPath = "./Node"
